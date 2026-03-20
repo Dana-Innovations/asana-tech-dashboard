@@ -1,13 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 import { AsanaProject } from '../types/asana';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 export class ProjectStore {
   async saveProjects(projects: AsanaProject[]) {
+    if (!supabase) {
+      console.warn('Supabase not configured - skipping save');
+      return;
+    }
     try {
       const { error } = await supabase
         .from('projects')
@@ -48,6 +52,10 @@ export class ProjectStore {
   }
 
   async getProjects(): Promise<AsanaProject[]> {
+    if (!supabase) {
+      console.warn('Supabase not configured - returning empty array');
+      return [];
+    }
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -110,6 +118,10 @@ export class ProjectStore {
 
   // Real-time subscription for project updates
   subscribeToProjects(callback: (projects: AsanaProject[]) => void) {
+    if (!supabase) {
+      console.warn('Supabase not configured - no real-time updates');
+      return { unsubscribe: () => {} };
+    }
     const subscription = supabase
       .channel('projects-changes')
       .on('postgres_changes', 
@@ -129,6 +141,7 @@ export class ProjectStore {
   }
 
   async getLastSyncTime(): Promise<Date | null> {
+    if (!supabase) return null;
     try {
       const { data, error } = await supabase
         .from('sync_log')
@@ -147,6 +160,7 @@ export class ProjectStore {
   }
 
   async updateSyncTime() {
+    if (!supabase) return;
     try {
       const { error } = await supabase
         .from('sync_log')

@@ -68,13 +68,13 @@ export function StoplightView({ projects }: StoplightViewProps) {
     
     switch (statusColor) {
       case 'green':
-        return <div className="w-4 h-4 bg-success-500 rounded-full" title="On Track" />;
+        return <div className="w-4 h-4 bg-success-500 rounded-full" />;
       case 'yellow':
-        return <div className="w-4 h-4 bg-warning-500 rounded-full" title="At Risk" />;
+        return <div className="w-4 h-4 bg-warning-500 rounded-full" />;
       case 'red':
-        return <div className="w-4 h-4 bg-danger-500 rounded-full" title="Off Track" />;
+        return <div className="w-4 h-4 bg-danger-500 rounded-full" />;
       default:
-        return <div className="w-4 h-4 bg-gray-500 rounded-full" title="Unknown" />;
+        return <div className="w-4 h-4 bg-gray-500 rounded-full" />;
     }
   };
 
@@ -83,11 +83,11 @@ export function StoplightView({ projects }: StoplightViewProps) {
     
     switch (priority) {
       case 'high':
-        return <AlertTriangle className="w-4 h-4 text-red-500" title="High Priority" />;
+        return <AlertTriangle className="w-4 h-4 text-red-500" />;
       case 'medium':
-        return <Clock className="w-4 h-4 text-yellow-500" title="Medium Priority" />;
+        return <Clock className="w-4 h-4 text-yellow-500" />;
       case 'low':
-        return <Target className="w-4 h-4 text-green-500" title="Low Priority" />;
+        return <Target className="w-4 h-4 text-green-500" />;
     }
   };
 

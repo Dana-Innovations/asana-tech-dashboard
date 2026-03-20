@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { AsanaProject, KanbanColumn } from '../types/asana';
+import type { AsanaProject, KanbanColumn } from '../types/asana';
 import { ProjectCard } from './ProjectCard';
 import { getStatusColor } from '../lib/asana';
 
@@ -42,7 +42,7 @@ export function KanbanView({ projects }: KanbanViewProps) {
   });
 
   // Update columns when projects change
-  useState(() => {
+  useEffect(() => {
     setColumns(prevColumns =>
       prevColumns.map(column => ({
         ...column,
@@ -130,7 +130,7 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
 
   return (
     <div
-      ref={drop}
+      ref={drop as any}
       className={`flex-shrink-0 w-80 rounded-lg border-2 border-dashed transition-colors ${
         column.color
       } ${isOver ? 'border-primary-400 bg-primary-50' : ''}`}
@@ -183,7 +183,7 @@ function DraggableProjectCard({ project }: DraggableProjectCardProps) {
 
   return (
     <div
-      ref={drag}
+      ref={drag as any}
       className={`cursor-grab active:cursor-grabbing transition-opacity ${
         isDragging ? 'opacity-50' : ''
       }`}
