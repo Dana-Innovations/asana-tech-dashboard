@@ -136,13 +136,13 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
       } ${isOver ? 'border-primary-400 bg-primary-50' : ''}`}
     >
       {/* Column Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg">{getColumnIcon(column.id)}</span>
-            <h3 className="font-semibold text-gray-900">{column.title}</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">{column.title}</h3>
           </div>
-          <span className="text-sm font-medium text-gray-500 bg-white px-2 py-1 rounded-full">
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full">
             {column.projects.length}
           </span>
         </div>
@@ -151,7 +151,7 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
       {/* Projects */}
       <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
         {column.projects.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-gray-400 dark:text-gray-500">
             <div className="text-4xl mb-2">📭</div>
             <p className="text-sm">No projects</p>
           </div>

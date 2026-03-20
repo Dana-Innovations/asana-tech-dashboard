@@ -148,7 +148,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <DashboardHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -159,8 +159,8 @@ export default function Dashboard() {
       />
 
       {error && (
-        <div className="mx-4 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">{error}</p>
+        <div className="mx-4 mt-4 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+          <p className="text-red-600 dark:text-red-300">{error}</p>
         </div>
       )}
 

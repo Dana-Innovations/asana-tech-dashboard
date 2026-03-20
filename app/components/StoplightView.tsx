@@ -117,7 +117,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
   const SortButton = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
     <button
       onClick={() => handleSort(field)}
-      className="flex items-center space-x-1 text-left font-medium text-gray-900 hover:text-primary-600 transition-colors"
+      className="flex items-center space-x-1 text-left font-medium text-gray-900 dark:text-white hover:text-primary-600 transition-colors"
     >
       <span>{children}</span>
       {sortField === field ? (
@@ -129,12 +129,12 @@ export function StoplightView({ projects }: StoplightViewProps) {
   );
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
         <div className="grid grid-cols-12 gap-4 items-center">
           <div className="col-span-1">
-            <span className="text-sm font-medium text-gray-700">Status</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</span>
           </div>
           <div className="col-span-4">
             <SortButton field="name">Project Name</SortButton>
@@ -146,7 +146,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
             <SortButton field="due_date">Due Date</SortButton>
           </div>
           <div className="col-span-2">
-            <span className="text-sm font-medium text-gray-700">Team</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</span>
           </div>
           <div className="col-span-1">
             <SortButton field="modified_at">Updated</SortButton>
@@ -155,11 +155,11 @@ export function StoplightView({ projects }: StoplightViewProps) {
       </div>
 
       {/* Project List */}
-      <div className="divide-y divide-gray-200">
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
         {sortedProjects.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <div className="text-4xl mb-4">📊</div>
-            <p className="text-gray-500">No projects found</p>
+            <p className="text-gray-500 dark:text-gray-400">No projects found</p>
           </div>
         ) : (
           sortedProjects.map((project) => {
@@ -168,7 +168,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
             return (
               <div
                 key={project.gid}
-                className="px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer group"
+                className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group"
               >
                 <div className="grid grid-cols-12 gap-4 items-center">
                   {/* Status Indicator */}
@@ -183,11 +183,11 @@ export function StoplightView({ projects }: StoplightViewProps) {
                   <div className="col-span-4">
                     <div className="flex items-center space-x-2">
                       <div className="min-w-0 flex-1">
-                        <h4 className="font-medium text-gray-900 truncate group-hover:text-primary-600 transition-colors">
+                        <h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-primary-600 transition-colors">
                           {project.name}
                         </h4>
                         {project.current_status?.title && (
-                          <p className="text-sm text-gray-500 truncate mt-1">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
                             {project.current_status.title}
                           </p>
                         )}
@@ -201,8 +201,8 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     {project.progress ? (
                       <div className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">{project.progress.percentage}%</span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-gray-600 dark:text-gray-400">{project.progress.percentage}%</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             {project.progress.completed_tasks}/{project.progress.total_tasks}
                           </span>
                         </div>
@@ -229,7 +229,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     <div className="flex items-center space-x-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
                       <div>
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-gray-900 dark:text-white">
                           {formatDate(project.due_date)}
                         </div>
                         {dueDateStatus && (
@@ -270,7 +270,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
 
                   {/* Updated */}
                   <div className="col-span-1">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       {formatDate(project.modified_at)}
                     </span>
                   </div>
@@ -302,8 +302,8 @@ export function StoplightView({ projects }: StoplightViewProps) {
 
       {/* Footer */}
       {sortedProjects.length > 0 && (
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{sortedProjects.length} projects</span>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">

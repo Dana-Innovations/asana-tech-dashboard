@@ -39,7 +39,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   );
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 flex-1">
@@ -51,20 +51,20 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                 placeholder="Search projects..."
                 value={filters.search || ''}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
             {/* Status Filter */}
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Status:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
               <div className="flex space-x-1">
                 <button
                   onClick={() => handleStatusChange(undefined)}
                   className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
                     !filters.status
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   All
@@ -107,8 +107,8 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               onClick={() => setShowAdvanced(!showAdvanced)}
               className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                 showAdvanced
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -120,7 +120,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900"
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             >
               <X className="w-4 h-4" />
               <span>Clear</span>
@@ -130,17 +130,17 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
         {/* Advanced Filters */}
         {showAdvanced && (
-          <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Assignee Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Users className="w-4 h-4 inline mr-1" />
                 Team Member
               </label>
               <select
                 value={filters.assignee || ''}
                 onChange={(e) => handleAssigneeChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">All members</option>
                 {uniqueAssignees.map(assignee => (
@@ -153,19 +153,19 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
             {/* Due Date Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Calendar className="w-4 h-4 inline mr-1" />
                 Due Date Range
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="date"
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Start date"
                 />
                 <input
                   type="date"
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="End date"
                 />
               </div>
@@ -173,10 +173,10 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
             {/* Project Type (Custom Field Example) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Project Type
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 <option value="">All types</option>
                 <option value="feature">Feature Development</option>
                 <option value="integration">Integration</option>

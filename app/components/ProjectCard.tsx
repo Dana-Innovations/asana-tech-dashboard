@@ -69,10 +69,10 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
 
   if (compact) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md transition-shadow">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 hover:shadow-md transition-shadow">
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-gray-900 truncate">{project.name}</h4>
+            <h4 className="font-medium text-gray-900 dark:text-white truncate">{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
               <span className={getStatusBadge()}>
                 {statusColor === 'green' ? 'On Track' : 
@@ -113,17 +113,17 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
-            <h4 className="font-semibold text-gray-900 truncate">{project.name}</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-white truncate">{project.name}</h4>
             {getPriorityIcon()}
           </div>
           
           {project.current_status?.title && (
-            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
               {project.current_status.title}
             </p>
           )}
@@ -138,7 +138,7 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
       {/* Progress Bar */}
       {project.progress && (
         <div className="mb-3">
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
+          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
             <span>Progress</span>
             <span>{formatProgress(project)}</span>
           </div>
