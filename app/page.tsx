@@ -9,6 +9,8 @@ import { StoplightView } from './components/StoplightView';
 import { DashboardHeader } from './components/DashboardHeader';
 import { FilterPanel } from './components/FilterPanel';
 import { LoadingSpinner } from './components/LoadingSpinner';
+import { VersionBadge } from './components/VersionBadge';
+import { FeedbackButton } from './components/FeedbackButton';
 
 export default function Dashboard() {
   const [projects, setProjects] = useState<AsanaProject[]>([]);
@@ -180,6 +182,10 @@ export default function Dashboard() {
           <StoplightView projects={filteredProjects} />
         )}
       </main>
+
+      {/* Fixed UI Elements */}
+      <VersionBadge />
+      <FeedbackButton />
     </div>
   );
 }
