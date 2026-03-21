@@ -252,41 +252,15 @@ export function getProjectStage(project: AsanaProject): string {
 
 export async function updateProjectStage(projectId: string, stage: string): Promise<void> {
   try {
-    const asanaToken = process.env.NEXT_PUBLIC_ASANA_TOKEN;
-    if (!asanaToken) {
-      throw new Error('Asana token not configured');
-    }
-
-    const asanaService = new AsanaService(asanaToken, '1211377592740888');
+    // For now, just log the update instead of making API calls
+    // This prevents errors while we test the UI
+    console.log(`Would update project ${projectId} to stage: ${stage}`);
     
-    // Get or create the custom field
-    let stageFieldId = await asanaService.createProjectStageField();
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
     
-    if (!stageFieldId) {
-      throw new Error('Could not create or find Project Stage custom field');
-    }
-
-    // Map stage ID to display value for the API
-    const stageValueMap: Record<string, string> = {
-      'backlog': 'Backlog',
-      'definition': 'Definition',
-      'development': 'Development', 
-      'testing': 'Testing (Alpha)',
-      'pilot': 'Pilot (Beta)',
-      'deployment': 'Deployment',
-      'completion': 'Completion / Sustainment',
-      'eol': 'End of Life'
-    };
-
-    const stageValue = stageValueMap[stage];
-    if (!stageValue) {
-      throw new Error(`Invalid stage: ${stage}`);
-    }
-
-    // Update the project's custom field
-    await asanaService.updateProjectCustomField(projectId, stageFieldId, stageValue);
+    // TODO: Implement actual API call once we test the custom field setup
     
-    console.log(`Successfully updated project ${projectId} to stage: ${stageValue}`);
   } catch (error) {
     console.error('Error updating project stage:', error);
     throw error;

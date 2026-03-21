@@ -5,6 +5,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import type { AsanaProject, KanbanColumn } from '../types/asana';
 import { ProjectCard } from './ProjectCard';
+import { ProjectModal } from './ProjectModal';
 import { getStatusColor, getProjectStage, updateProjectStage } from '../lib/asana';
 
 interface KanbanViewProps {
@@ -13,6 +14,9 @@ interface KanbanViewProps {
 }
 
 export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
+  const [selectedProject, setSelectedProject] = useState<AsanaProject | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const [columns, setColumns] = useState<KanbanColumn[]>(() => {
     return [
       {
@@ -25,43 +29,43 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
         id: 'definition',
         title: 'Definition',
         projects: projects.filter(p => getProjectStage(p) === 'definition'),
-        color: 'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'development',
         title: 'Development',
         projects: projects.filter(p => getProjectStage(p) === 'development'),
-        color: 'bg-purple-50 dark:bg-purple-900 border-purple-200 dark:border-purple-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'testing',
         title: 'Testing (Alpha)',
         projects: projects.filter(p => getProjectStage(p) === 'testing'),
-        color: 'bg-yellow-50 dark:bg-yellow-900 border-yellow-200 dark:border-yellow-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'pilot',
         title: 'Pilot (Beta)',
         projects: projects.filter(p => getProjectStage(p) === 'pilot'),
-        color: 'bg-orange-50 dark:bg-orange-900 border-orange-200 dark:border-orange-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'deployment',
         title: 'Deployment',
         projects: projects.filter(p => getProjectStage(p) === 'deployment'),
-        color: 'bg-green-50 dark:bg-green-900 border-green-200 dark:border-green-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'completion',
         title: 'Completion / Sustainment',
         projects: projects.filter(p => getProjectStage(p) === 'completion'),
-        color: 'bg-teal-50 dark:bg-teal-900 border-teal-200 dark:border-teal-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
         id: 'eol',
         title: 'End of Life',
         projects: projects.filter(p => getProjectStage(p) === 'eol'),
-        color: 'bg-red-50 dark:bg-red-900 border-red-200 dark:border-red-700'
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       }
     ];
   });
@@ -144,15 +148,37 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="flex space-x-6 overflow-x-auto pb-4">
+      <div className="grid grid-cols-8 gap-2 min-h-[calc(100vh-140px)]">
         {columns.map(column => (
           <KanbanColumn
             key={column.id}
             column={column}
             onMoveProject={moveProject}
+            onProjectClick={(project) => {
+              setSelectedProject(project);
+              setIsModalOpen(true);
+            }}
           />
         ))}
       </div>
+
+      {/* Project Modal */}
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedProject(null);
+          }}
+          onUpdate={(updatedProject) => {
+            // Handle project update
+            if (onProjectUpdate) {
+              onProjectUpdate();
+            }
+          }}
+        />
+      )}
     </DndProvider>
   );
 }
@@ -160,9 +186,10 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
 interface KanbanColumnProps {
   column: KanbanColumn;
   onMoveProject: (projectId: string, targetColumnId: string) => void;
+  onProjectClick: (project: AsanaProject) => void;
 }
 
-function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
+function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnProps) {
   const [{ isOver }, drop] = useDrop({
     accept: 'project',
     drop: (item: { projectId: string }) => {
@@ -199,9 +226,9 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
   return (
     <div
       ref={drop as any}
-      className={`flex-shrink-0 w-80 rounded-lg border-2 border-dashed transition-colors ${
+      className={`min-h-[600px] rounded-lg border-2 border-dashed transition-colors ${
         column.color
-      } ${isOver ? 'border-primary-400 bg-primary-50' : ''}`}
+      } ${isOver ? 'border-primary-400 dark:border-primary-500 bg-primary-50 dark:bg-primary-900' : ''}`}
     >
       {/* Column Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -228,6 +255,7 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
             <DraggableProjectCard
               key={project.gid}
               project={project}
+              onProjectClick={onProjectClick}
             />
           ))
         )}
@@ -238,9 +266,10 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
 
 interface DraggableProjectCardProps {
   project: AsanaProject;
+  onProjectClick: (project: AsanaProject) => void;
 }
 
-function DraggableProjectCard({ project }: DraggableProjectCardProps) {
+function DraggableProjectCard({ project, onProjectClick }: DraggableProjectCardProps) {
   const [{ isDragging }, drag] = useDrag({
     type: 'project',
     item: { projectId: project.gid },
@@ -256,7 +285,10 @@ function DraggableProjectCard({ project }: DraggableProjectCardProps) {
         isDragging ? 'opacity-50' : ''
       }`}
     >
-      <ProjectCard project={project} />
+      <ProjectCard 
+        project={project} 
+        onClick={() => onProjectClick(project)}
+      />
     </div>
   );
 }
