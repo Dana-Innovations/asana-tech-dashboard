@@ -112,6 +112,77 @@ export class AsanaService {
     }
   }
 
+  async updateProjectCustomField(projectId: string, customFieldId: string, value: string) {
+    try {
+      const response = await this.apiClient.put(`/projects/${projectId}`, {
+        data: {
+          custom_fields: {
+            [customFieldId]: value
+          }
+        }
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.error('Error updating project custom field:', error);
+      throw new Error('Failed to update project custom field');
+    }
+  }
+
+  async getCustomFields(): Promise<any[]> {
+    try {
+      const response = await this.apiClient.get('/custom_fields', {
+        params: {
+          workspace: '1201171894258423', // Derick's workspace ID
+          opt_fields: 'gid,name,type,enum_options.gid,enum_options.name'
+        }
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching custom fields:', error);
+      return [];
+    }
+  }
+
+  async createProjectStageField(): Promise<string | null> {
+    try {
+      // First check if the field already exists
+      const existingFields = await this.getCustomFields();
+      const existingField = existingFields.find(field => 
+        field.name === 'Project Stage' || field.name === 'Dashboard Stage'
+      );
+
+      if (existingField) {
+        return existingField.gid;
+      }
+
+      // Create the custom field with all stage options
+      const response = await this.apiClient.post('/custom_fields', {
+        data: {
+          name: 'Project Stage',
+          type: 'enum',
+          workspace: '1201171894258423',
+          enum_options: [
+            { name: 'Backlog', color: 'gray' },
+            { name: 'Definition', color: 'blue' },
+            { name: 'Development', color: 'purple' },
+            { name: 'Testing (Alpha)', color: 'yellow' },
+            { name: 'Pilot (Beta)', color: 'orange' },
+            { name: 'Deployment', color: 'green' },
+            { name: 'Completion / Sustainment', color: 'teal' },
+            { name: 'End of Life', color: 'red' }
+          ]
+        }
+      });
+
+      return response.data.data.gid;
+    } catch (error) {
+      console.error('Error creating project stage field:', error);
+      return null;
+    }
+  }
+
   async getProjectTasks(projectId: string): Promise<AsanaTask[]> {
     try {
       const response = await this.apiClient.get(`/projects/${projectId}/tasks`, {
@@ -134,6 +205,91 @@ export class AsanaService {
       console.error(`Error fetching tasks for project ${projectId}:`, error);
       throw new Error('Failed to fetch project tasks');
     }
+  }
+}
+
+// Project Stage Management
+const STAGE_FIELD_NAME = 'Project Stage';
+
+export function getProjectStage(project: AsanaProject): string {
+  // Look for custom field that tracks project stage
+  const stageField = project.custom_fields.find(field => 
+    field.name === STAGE_FIELD_NAME || 
+    field.name === 'Stage' ||
+    field.name === 'Dashboard Stage'
+  );
+
+  if (stageField && stageField.display_value) {
+    // Map display values to column IDs
+    const stageMap: Record<string, string> = {
+      'Backlog': 'backlog',
+      'Definition': 'definition', 
+      'Development': 'development',
+      'Testing (Alpha)': 'testing',
+      'Alpha': 'testing',
+      'Pilot (Beta)': 'pilot',
+      'Beta': 'pilot',
+      'Deployment': 'deployment',
+      'Completion / Sustainment': 'completion',
+      'Completion': 'completion',
+      'Sustainment': 'completion',
+      'End of Life': 'eol',
+      'EOL': 'eol'
+    };
+
+    return stageMap[stageField.display_value] || 'backlog';
+  }
+
+  // Fallback: use status color to determine stage
+  const statusColor = getStatusColor(project);
+  if (project.completed) return 'completion';
+  if (statusColor === 'green') return 'development';
+  if (statusColor === 'yellow') return 'testing';
+  if (statusColor === 'red') return 'backlog';
+  
+  return 'backlog';
+}
+
+export async function updateProjectStage(projectId: string, stage: string): Promise<void> {
+  try {
+    const asanaToken = process.env.NEXT_PUBLIC_ASANA_TOKEN;
+    if (!asanaToken) {
+      throw new Error('Asana token not configured');
+    }
+
+    const asanaService = new AsanaService(asanaToken, '1211377592740888');
+    
+    // Get or create the custom field
+    let stageFieldId = await asanaService.createProjectStageField();
+    
+    if (!stageFieldId) {
+      throw new Error('Could not create or find Project Stage custom field');
+    }
+
+    // Map stage ID to display value for the API
+    const stageValueMap: Record<string, string> = {
+      'backlog': 'Backlog',
+      'definition': 'Definition',
+      'development': 'Development', 
+      'testing': 'Testing (Alpha)',
+      'pilot': 'Pilot (Beta)',
+      'deployment': 'Deployment',
+      'completion': 'Completion / Sustainment',
+      'eol': 'End of Life'
+    };
+
+    const stageValue = stageValueMap[stage];
+    if (!stageValue) {
+      throw new Error(`Invalid stage: ${stage}`);
+    }
+
+    // Update the project's custom field
+    await asanaService.updateProjectCustomField(projectId, stageFieldId, stageValue);
+    
+    console.log(`Successfully updated project ${projectId} to stage: ${stageValue}`);
+  } catch (error) {
+    console.error('Error updating project stage:', error);
+    throw error;
   }
 }
 

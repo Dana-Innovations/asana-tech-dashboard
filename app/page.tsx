@@ -172,7 +172,10 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-4 py-6">
         {viewMode === 'kanban' ? (
-          <KanbanView projects={filteredProjects} />
+          <KanbanView 
+            projects={filteredProjects} 
+            onProjectUpdate={loadProjects}
+          />
         ) : (
           <StoplightView projects={filteredProjects} />
         )}

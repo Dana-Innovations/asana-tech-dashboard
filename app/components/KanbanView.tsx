@@ -5,38 +5,63 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import type { AsanaProject, KanbanColumn } from '../types/asana';
 import { ProjectCard } from './ProjectCard';
-import { getStatusColor } from '../lib/asana';
+import { getStatusColor, getProjectStage, updateProjectStage } from '../lib/asana';
 
 interface KanbanViewProps {
   projects: AsanaProject[];
+  onProjectUpdate?: () => void;
 }
 
-export function KanbanView({ projects }: KanbanViewProps) {
+export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
   const [columns, setColumns] = useState<KanbanColumn[]>(() => {
     return [
       {
-        id: 'green',
-        title: 'On Track',
-        projects: projects.filter(p => getStatusColor(p) === 'green'),
-        color: 'bg-success-50 border-success-200'
+        id: 'backlog',
+        title: 'Backlog',
+        projects: projects.filter(p => getProjectStage(p) === 'backlog'),
+        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
       },
       {
-        id: 'yellow',
-        title: 'At Risk',
-        projects: projects.filter(p => getStatusColor(p) === 'yellow'),
-        color: 'bg-warning-50 border-warning-200'
+        id: 'definition',
+        title: 'Definition',
+        projects: projects.filter(p => getProjectStage(p) === 'definition'),
+        color: 'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700'
       },
       {
-        id: 'red',
-        title: 'Off Track',
-        projects: projects.filter(p => getStatusColor(p) === 'red'),
-        color: 'bg-danger-50 border-danger-200'
+        id: 'development',
+        title: 'Development',
+        projects: projects.filter(p => getProjectStage(p) === 'development'),
+        color: 'bg-purple-50 dark:bg-purple-900 border-purple-200 dark:border-purple-700'
       },
       {
-        id: 'completed',
-        title: 'Completed',
-        projects: projects.filter(p => p.completed),
-        color: 'bg-gray-50 border-gray-200'
+        id: 'testing',
+        title: 'Testing (Alpha)',
+        projects: projects.filter(p => getProjectStage(p) === 'testing'),
+        color: 'bg-yellow-50 dark:bg-yellow-900 border-yellow-200 dark:border-yellow-700'
+      },
+      {
+        id: 'pilot',
+        title: 'Pilot (Beta)',
+        projects: projects.filter(p => getProjectStage(p) === 'pilot'),
+        color: 'bg-orange-50 dark:bg-orange-900 border-orange-200 dark:border-orange-700'
+      },
+      {
+        id: 'deployment',
+        title: 'Deployment',
+        projects: projects.filter(p => getProjectStage(p) === 'deployment'),
+        color: 'bg-green-50 dark:bg-green-900 border-green-200 dark:border-green-700'
+      },
+      {
+        id: 'completion',
+        title: 'Completion / Sustainment',
+        projects: projects.filter(p => getProjectStage(p) === 'completion'),
+        color: 'bg-teal-50 dark:bg-teal-900 border-teal-200 dark:border-teal-700'
+      },
+      {
+        id: 'eol',
+        title: 'End of Life',
+        projects: projects.filter(p => getProjectStage(p) === 'eol'),
+        color: 'bg-red-50 dark:bg-red-900 border-red-200 dark:border-red-700'
       }
     ];
   });
@@ -46,14 +71,12 @@ export function KanbanView({ projects }: KanbanViewProps) {
     setColumns(prevColumns =>
       prevColumns.map(column => ({
         ...column,
-        projects: column.id === 'completed' 
-          ? projects.filter(p => p.completed)
-          : projects.filter(p => !p.completed && getStatusColor(p) === column.id)
+        projects: projects.filter(p => getProjectStage(p) === column.id)
       }))
     );
   }, [projects]);
 
-  const moveProject = (projectId: string, targetColumnId: string) => {
+  const moveProject = async (projectId: string, targetColumnId: string) => {
     const sourceColumn = columns.find(col => 
       col.projects.some(p => p.gid === projectId)
     );
@@ -61,6 +84,7 @@ export function KanbanView({ projects }: KanbanViewProps) {
     const project = sourceColumn?.projects.find(p => p.gid === projectId);
     if (!project || !sourceColumn) return;
 
+    // Optimistically update UI
     setColumns(prevColumns =>
       prevColumns.map(column => {
         if (column.id === sourceColumn.id) {
@@ -73,13 +97,49 @@ export function KanbanView({ projects }: KanbanViewProps) {
         if (column.id === targetColumnId) {
           return {
             ...column,
-            projects: [...column.projects, project]
+            projects: [...column.projects, { ...project, stageField: targetColumnId }]
           };
         }
         
         return column;
       })
     );
+
+    // Update project stage in Asana
+    try {
+      await updateProjectStage(projectId, targetColumnId);
+      
+      // Trigger a refresh of the project data
+      if (onProjectUpdate) {
+        onProjectUpdate();
+      }
+    } catch (error) {
+      console.error('Failed to update project stage:', error);
+      
+      // Revert the optimistic update
+      setColumns(prevColumns =>
+        prevColumns.map(column => {
+          if (column.id === targetColumnId) {
+            return {
+              ...column,
+              projects: column.projects.filter(p => p.gid !== projectId)
+            };
+          }
+          
+          if (column.id === sourceColumn.id) {
+            return {
+              ...column,
+              projects: [...column.projects, project]
+            };
+          }
+          
+          return column;
+        })
+      );
+      
+      // Show user-friendly error message
+      alert('Failed to update project stage. Please try again.');
+    }
   };
 
   return (
@@ -115,14 +175,22 @@ function KanbanColumn({ column, onMoveProject }: KanbanColumnProps) {
 
   const getColumnIcon = (columnId: string) => {
     switch (columnId) {
-      case 'green':
-        return '🟢';
-      case 'yellow':
-        return '🟡';
-      case 'red':
-        return '🔴';
-      case 'completed':
+      case 'backlog':
+        return '📋';
+      case 'definition':
+        return '📝';
+      case 'development':
+        return '⚙️';
+      case 'testing':
+        return '🧪';
+      case 'pilot':
+        return '🚀';
+      case 'deployment':
+        return '🌐';
+      case 'completion':
         return '✅';
+      case 'eol':
+        return '🔚';
       default:
         return '📋';
     }
