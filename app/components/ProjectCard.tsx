@@ -15,6 +15,11 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   const priority = getProjectPriority(project);
 
   const getStatusBadge = () => {
+    // Only show status badge if there's an actual status update
+    if (!project.current_status?.color) {
+      return null;
+    }
+
     const baseClasses = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium';
     
     switch (statusColor) {
@@ -26,6 +31,23 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         return `${baseClasses} bg-danger-50 text-danger-700 border border-danger-200`;
       default:
         return `${baseClasses} bg-gray-50 text-gray-700 border border-gray-200`;
+    }
+  };
+
+  const getStatusText = () => {
+    if (!project.current_status?.color) {
+      return null;
+    }
+    
+    switch (statusColor) {
+      case 'green':
+        return 'On Track';
+      case 'yellow':
+        return 'At Risk';
+      case 'red':
+        return 'Off Track';
+      default:
+        return null;
     }
   };
 
@@ -78,10 +100,11 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-gray-900 dark:text-white truncate">{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
-              <span className={getStatusBadge()}>
-                {statusColor === 'green' ? 'On Track' : 
-                 statusColor === 'yellow' ? 'At Risk' : 'Off Track'}
-              </span>
+              {getStatusBadge() && (
+                <span className={getStatusBadge()}>
+                  {getStatusText()}
+                </span>
+              )}
               {project.progress && (
                 <span className="text-xs text-gray-500">
                   {formatProgress(project)}
@@ -136,10 +159,11 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           )}
         </div>
 
-        <span className={getStatusBadge()}>
-          {statusColor === 'green' ? 'On Track' : 
-           statusColor === 'yellow' ? 'At Risk' : 'Off Track'}
-        </span>
+        {getStatusBadge() && (
+          <span className={getStatusBadge()}>
+            {getStatusText()}
+          </span>
+        )}
       </div>
 
       {/* Progress Bar */}

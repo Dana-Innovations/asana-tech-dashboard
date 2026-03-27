@@ -9,6 +9,17 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.3.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'fix', description: 'Consolidated team members in filter dropdown - no more duplicates' },
+      { type: 'fix', description: 'Status badges now only show when there\'s an actual status update, not fallback status' },
+      { type: 'feature', description: 'Updated design to conform with Sonance brand guidelines (brand.sonance.com)' },
+      { type: 'improvement', description: 'Implemented sophisticated dark monochromatic color scheme with high contrast' },
+      { type: 'improvement', description: 'Added Sonance-specific color palette for minimalist, elegant design' }
+    ]
+  },
+  {
     version: '1.2.0',
     date: '2026-03-27',
     changes: [

@@ -30,13 +30,12 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.dateRange;
 
   // Get unique assignees from all projects
-  const uniqueAssignees = Array.from(
-    new Set(
-      projects.flatMap(project => 
-        project.members.map(member => ({ gid: member.gid, name: member.name }))
-      )
-    )
-  );
+  const uniqueAssignees = Object.values(
+    projects.flatMap(project => project.members).reduce((acc, member) => {
+      acc[member.gid] = { gid: member.gid, name: member.name };
+      return acc;
+    }, {} as Record<string, { gid: string; name: string }>)
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
