@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { ViewMode } from '../types/asana';
-import { RefreshCw, Grid, List, Calendar, Users, TrendingUp } from 'lucide-react';
+import { Grid, List, Calendar, Users, TrendingUp } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
 interface DashboardHeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
-  onSync: () => void;
-  syncing: boolean;
   lastSync: Date | null;
   projectCount: number;
 }
@@ -15,8 +13,6 @@ interface DashboardHeaderProps {
 export function DashboardHeader({
   viewMode,
   onViewModeChange,
-  onSync,
-  syncing,
   lastSync,
   projectCount
 }: DashboardHeaderProps) {
@@ -79,20 +75,6 @@ export function DashboardHeader({
 
             {/* Theme Toggle */}
             <ThemeToggle />
-
-            {/* Sync Button */}
-            <button
-              onClick={onSync}
-              disabled={syncing}
-              className={`flex items-center space-x-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                syncing
-                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  : 'bg-primary-600 text-white hover:bg-primary-700'
-              }`}
-            >
-              <RefreshCw className={`w-3 h-3 ${syncing ? 'animate-spin' : ''}`} />
-              <span>{syncing ? 'Syncing...' : 'Sync'}</span>
-            </button>
           </div>
         </div>
 

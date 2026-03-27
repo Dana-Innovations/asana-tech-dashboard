@@ -42,6 +42,18 @@ export default function Dashboard() {
     applyFilters();
   }, [projects, filters]);
 
+  // Auto-sync every 3 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Only sync if we're not already syncing and have the required config
+      if (!syncing && process.env.NEXT_PUBLIC_ASANA_TOKEN && process.env.NEXT_PUBLIC_ASANA_TEAM_ID) {
+        syncProjects();
+      }
+    }, 3 * 60 * 1000); // 3 minutes
+
+    return () => clearInterval(interval);
+  }, [syncing]); // Re-run if syncing state changes
+
   const loadProjects = async () => {
     try {
       setLoading(true);
@@ -155,8 +167,6 @@ export default function Dashboard() {
       <DashboardHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        onSync={syncProjects}
-        syncing={syncing}
         lastSync={lastSync}
         projectCount={projects.length}
       />
