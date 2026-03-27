@@ -108,21 +108,15 @@ export class AsanaService {
 
       const projects = response.data.data;
       
-      // Get task counts for each project (with rate limiting)
-      const projectsWithProgress: AsanaProject[] = [];
-      for (const project of projects) {
-        const progress = await this.getProjectProgress(project.gid);
-        projectsWithProgress.push({
-          ...project,
-          custom_fields: project.custom_fields || [],
-          members: project.members || [],
-          progress
-        });
-        // Small delay to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+      // Return projects quickly without progress data first (for faster initial load)
+      const projectsWithBasicData: AsanaProject[] = projects.map((project: any) => ({
+        ...project,
+        custom_fields: project.custom_fields || [],
+        members: project.members || [],
+        progress: { completed_tasks: 0, total_tasks: 0, percentage: 0 } // Default progress
+      }));
 
-      return projectsWithProgress;
+      return projectsWithBasicData;
     } catch (error) {
       console.error('Error fetching portfolio projects:', error);
       throw new Error('Failed to fetch projects from Asana portfolio');
