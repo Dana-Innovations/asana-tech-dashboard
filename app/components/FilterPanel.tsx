@@ -42,11 +42,11 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   ).sort((a, b) => a.name.localeCompare(b.name));
 
   // Get unique project types from all projects
-  const uniqueProjectTypes = [...new Set(
+  const uniqueProjectTypes = Array.from(new Set(
     projects.map(project => 
       project.custom_fields.find(field => field.name === 'Project Type')?.display_value
     ).filter(Boolean)
-  )].sort();
+  )).sort();
 
   return (
     <div className="bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40">
