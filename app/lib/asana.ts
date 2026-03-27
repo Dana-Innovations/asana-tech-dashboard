@@ -4,9 +4,11 @@ import { AsanaProject, AsanaTask } from '../types/asana';
 export class AsanaService {
   private apiClient: any;
   private teamId: string;
+  private portfolioId?: string;
 
-  constructor(accessToken: string, teamId: string) {
+  constructor(accessToken: string, teamId: string, portfolioId?: string) {
     this.teamId = teamId;
+    this.portfolioId = portfolioId;
     this.apiClient = axios.create({
       baseURL: 'https://app.asana.com/api/1.0',
       headers: {
@@ -17,6 +19,11 @@ export class AsanaService {
   }
 
   async getProjects(): Promise<AsanaProject[]> {
+    // If portfolio ID is provided, fetch from portfolio instead of team
+    if (this.portfolioId) {
+      return this.getPortfolioProjects();
+    }
+    
     try {
       const response = await this.apiClient.get('/projects', {
         params: {
@@ -65,6 +72,60 @@ export class AsanaService {
     } catch (error) {
       console.error('Error fetching projects:', error);
       throw new Error('Failed to fetch projects from Asana');
+    }
+  }
+
+  async getPortfolioProjects(): Promise<AsanaProject[]> {
+    try {
+      const response = await this.apiClient.get(`/portfolios/${this.portfolioId}/items`, {
+        params: {
+          opt_fields: [
+            'name',
+            'completed',
+            'current_status.color',
+            'current_status.text',
+            'current_status.title',
+            'custom_fields.gid',
+            'custom_fields.name',
+            'custom_fields.type',
+            'custom_fields.display_value',
+            'custom_fields.enum_options.gid',
+            'custom_fields.enum_options.name',
+            'custom_fields.enum_options.color',
+            'team.gid',
+            'team.name',
+            'members.gid',
+            'members.name',
+            'members.email',
+            'members.photo.image_128x128',
+            'created_at',
+            'modified_at',
+            'due_date',
+            'notes'
+          ].join(',')
+        }
+      });
+
+      const projects = response.data.data;
+      
+      // Get task counts for each project (with rate limiting)
+      const projectsWithProgress: AsanaProject[] = [];
+      for (const project of projects) {
+        const progress = await this.getProjectProgress(project.gid);
+        projectsWithProgress.push({
+          ...project,
+          custom_fields: project.custom_fields || [],
+          members: project.members || [],
+          progress
+        });
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      return projectsWithProgress;
+    } catch (error) {
+      console.error('Error fetching portfolio projects:', error);
+      throw new Error('Failed to fetch projects from Asana portfolio');
     }
   }
 
@@ -209,27 +270,30 @@ export class AsanaService {
 }
 
 // Project Stage Management
-const STAGE_FIELD_NAME = 'Project Stage';
+const STAGE_FIELD_NAMES = ['T&I Stage', 'Project Stage', 'Stage', 'Dashboard Stage'];
 
 export function getProjectStage(project: AsanaProject): string {
-  // Look for custom field that tracks project stage
+  // Look for custom field that tracks project stage (check multiple possible names)
   const stageField = project.custom_fields.find(field => 
-    field.name === STAGE_FIELD_NAME || 
-    field.name === 'Stage' ||
-    field.name === 'Dashboard Stage'
+    STAGE_FIELD_NAMES.includes(field.name)
   );
 
   if (stageField && stageField.display_value) {
-    // Map display values to column IDs
+    // Map display values to column IDs (supports both old and new naming)
     const stageMap: Record<string, string> = {
+      // Current T&I Portfolio values
       'Backlog': 'backlog',
       'Definition': 'definition', 
       'Development': 'development',
+      'Testing': 'testing',
       'Testing (Alpha)': 'testing',
       'Alpha': 'testing',
+      'Pilot': 'pilot',
       'Pilot (Beta)': 'pilot',
       'Beta': 'pilot',
       'Deployment': 'deployment',
+      'Deploy': 'deployment',
+      'Deploy / Sustain': 'completion',  // Actual value from T&I Portfolio
       'Completion / Sustainment': 'completion',
       'Completion': 'completion',
       'Sustainment': 'completion',

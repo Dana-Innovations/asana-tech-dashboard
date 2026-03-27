@@ -80,12 +80,13 @@ export default function Dashboard() {
 
       const asanaToken = process.env.NEXT_PUBLIC_ASANA_TOKEN;
       const teamId = process.env.NEXT_PUBLIC_ASANA_TEAM_ID;
+      const portfolioId = process.env.NEXT_PUBLIC_ASANA_PORTFOLIO_ID;
 
       if (!asanaToken || !teamId) {
         throw new Error('Asana configuration missing. Please check environment variables.');
       }
 
-      const asanaService = new AsanaService(asanaToken, teamId);
+      const asanaService = new AsanaService(asanaToken, teamId, portfolioId);
       const freshProjects = await projectStore.syncProjects(asanaService);
       
       setProjects(freshProjects);
