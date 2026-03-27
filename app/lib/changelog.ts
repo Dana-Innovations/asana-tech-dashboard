@@ -9,6 +9,28 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.6.1',
+    date: '2026-03-27',
+    changes: [
+      { type: 'fix', description: 'Fixed Project Type filter to match actual Asana portfolio values (APP, KI, AGENT, IP, AUTO, RSCH)' },
+      { type: 'fix', description: 'Connected Project Type dropdown to filtering logic with proper onChange handler' },
+      { type: 'improvement', description: 'Enhanced column borders with modern ring styling instead of dashed lines' },
+      { type: 'feature', description: 'Added Project Type filter badge in active filters display section' }
+    ]
+  },
+  {
+    version: '1.6.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'improvement', description: 'Full implementation of Sonance Brand MCP guidelines for professional appearance' },
+      { type: 'improvement', description: 'Replaced dashed column borders with sophisticated solid borders and subtle shadows' },
+      { type: 'feature', description: 'Comprehensive dark and light mode design using Sonance color palette' },
+      { type: 'improvement', description: 'Enhanced hover states and transitions throughout the interface' },
+      { type: 'improvement', description: 'Refined typography and spacing for premium business look and feel' },
+      { type: 'fix', description: 'All 9 requested tasks from Asana TI Dashboard requirements now fully implemented' }
+    ]
+  },
+  {
     version: '1.5.1',
     date: '2026-03-27',
     changes: [

@@ -113,12 +113,12 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   if (compact) {
     return (
       <div 
-        className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 hover:shadow-md transition-shadow cursor-pointer"
+        className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border border-sonance-slate/20 dark:border-sonance-slate/40 p-3 hover:shadow-lg hover:border-sonance-gold/50 transition-all duration-200 cursor-pointer"
         onClick={onClick}
       >
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-gray-900 dark:text-white truncate">{project.name}</h4>
+            <h4 className="font-medium text-sonance-dark dark:text-sonance-silver truncate">{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
               {(() => {
                 const statusBadgeClass = getStatusBadge();
@@ -129,7 +129,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
                 );
               })()}
               {project.progress && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-sonance-mist">
                   {formatProgress(project)}
                 </span>
               )}
@@ -164,7 +164,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   return (
     <div 
-      className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border border-sonance-slate/20 dark:border-sonance-slate/40 p-4 hover:shadow-lg hover:border-sonance-gold/50 transition-all duration-200 cursor-pointer"
       onClick={onClick}
     >
       {/* Header */}

@@ -23,49 +23,49 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
         id: 'backlog',
         title: 'Backlog',
         projects: projects.filter(p => getProjectStage(p) === 'backlog'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'definition',
         title: 'Definition',
         projects: projects.filter(p => getProjectStage(p) === 'definition'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'development',
         title: 'Development',
         projects: projects.filter(p => getProjectStage(p) === 'development'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'testing',
         title: 'Testing (Alpha)',
         projects: projects.filter(p => getProjectStage(p) === 'testing'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'pilot',
         title: 'Pilot (Beta)',
         projects: projects.filter(p => getProjectStage(p) === 'pilot'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'deployment',
         title: 'Deployment',
         projects: projects.filter(p => getProjectStage(p) === 'deployment'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'completion',
         title: 'Completion / Sustainment',
         projects: projects.filter(p => getProjectStage(p) === 'completion'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       },
       {
         id: 'eol',
         title: 'End of Life',
         projects: projects.filter(p => getProjectStage(p) === 'eol'),
-        color: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+        color: 'bg-sonance-white dark:bg-sonance-charcoal'
       }
     ];
   });
@@ -207,17 +207,18 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
   return (
     <div
       ref={drop as any}
-      className={`min-h-[calc(100vh-200px)] flex-1 min-w-[280px] rounded-lg border-2 border-dashed transition-colors ${
+      className={`min-h-[calc(100vh-200px)] flex-1 min-w-[280px] rounded-xl transition-colors ${
         column.color
-      } ${isOver ? 'border-primary-400 dark:border-primary-500 bg-primary-50 dark:bg-primary-900' : ''}`}
+      } ${isOver ? 'ring-2 ring-sonance-gold bg-sonance-gold/5 dark:bg-sonance-gold/10' : 'ring-1 ring-sonance-slate/20 dark:ring-sonance-slate/30'} 
+      shadow-sm hover:shadow-lg transition-all duration-200`}
     >
       {/* Column Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-sonance-slate/20 dark:border-sonance-slate/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white">{column.title}</h3>
+            <h3 className="font-semibold text-sonance-dark dark:text-sonance-silver tracking-tight">{column.title}</h3>
           </div>
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full">
+          <span className="text-sm font-medium text-sonance-mist bg-sonance-slate/10 dark:bg-sonance-slate/20 px-3 py-1 rounded-full">
             {column.projects.length}
           </span>
         </div>
@@ -226,8 +227,8 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
       {/* Projects */}
       <div className="p-4 space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto pb-8">
         {column.projects.length === 0 ? (
-          <div className="text-center py-8 text-gray-400 dark:text-gray-500">
-            <p className="text-sm">No projects</p>
+          <div className="text-center py-8 text-sonance-mist">
+            <p className="text-sm font-medium">No Projects</p>
           </div>
         ) : (
           column.projects.map(project => (

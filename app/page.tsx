@@ -141,7 +141,13 @@ export default function Dashboard() {
       );
     }
 
-
+    // Project type filter
+    if (filters.projectType) {
+      filtered = filtered.filter(project => {
+        const projectTypeField = project.custom_fields.find(field => field.name === 'Project Type');
+        return projectTypeField?.display_value === filters.projectType;
+      });
+    }
 
     setFilteredProjects(filtered);
   };
@@ -155,7 +161,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-sonance-white dark:bg-sonance-dark">
       <DashboardHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}

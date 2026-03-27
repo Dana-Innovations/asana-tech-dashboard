@@ -33,15 +33,15 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <header className="bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40 shadow-sm">
       <div className="w-full px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Title */}
           <div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-xl font-bold text-sonance-dark dark:text-sonance-silver tracking-tight">
               Technology & Innovation PLM
             </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-sonance-mist">
               {projectCount} projects • {formatLastSync(lastSync)}
             </p>
           </div>
@@ -49,7 +49,7 @@ export function DashboardHeader({
           {/* Controls */}
           <div className="flex items-center space-x-3">
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <div className="flex items-center bg-sonance-slate/10 dark:bg-sonance-slate/20 rounded-lg p-1">
               <button
                 onClick={() => onViewModeChange('kanban')}
                 className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-colors ${

@@ -60,6 +60,7 @@ export interface DashboardFilter {
   status?: 'green' | 'yellow' | 'red';
   assignee?: string;
   search?: string;
+  projectType?: string;
 }
 
 export interface KanbanColumn {

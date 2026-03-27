@@ -23,11 +23,15 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     onFiltersChange({ ...filters, assignee: assignee || undefined });
   };
 
+  const handleProjectTypeChange = (projectType: string) => {
+    onFiltersChange({ ...filters, projectType: projectType || undefined });
+  };
+
   const clearFilters = () => {
     onFiltersChange({});
   };
 
-  const hasActiveFilters = filters.status || filters.search || filters.assignee;
+  const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.projectType;
 
   // Get unique assignees from all projects
   const uniqueAssignees = Object.values(
@@ -37,8 +41,15 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     }, {} as Record<string, { gid: string; name: string }>)
   ).sort((a, b) => a.name.localeCompare(b.name));
 
+  // Get unique project types from all projects
+  const uniqueProjectTypes = [...new Set(
+    projects.map(project => 
+      project.custom_fields.find(field => field.name === 'Project Type')?.display_value
+    ).filter(Boolean)
+  )].sort();
+
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div className="bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40">
       <div className="w-full px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 flex-1">
@@ -50,13 +61,13 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                 placeholder="Search projects..."
                 value={filters.search || ''}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors"
               />
             </div>
 
             {/* Status Filter */}
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
+              <span className="text-sm text-sonance-mist font-medium">Status:</span>
               <div className="flex space-x-1">
                 <button
                   onClick={() => handleStatusChange(undefined)}
@@ -152,14 +163,22 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Project Type
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+              <select 
+                value={filters.projectType || ''}
+                onChange={(e) => handleProjectTypeChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
                 <option value="">All types</option>
-                <option value="mobile-app">Mobile App</option>
-                <option value="web-platform">Web Platform</option>
-                <option value="api-integration">API Integration</option>
-                <option value="hardware-integration">Hardware Integration</option>
-                <option value="research-development">Research & Development</option>
-                <option value="infrastructure">Infrastructure</option>
+                {uniqueProjectTypes.map(type => (
+                  <option key={type} value={type}>
+                    {type} {type === 'APP' ? '- Application' : 
+                         type === 'KI' ? '- Key Initiative' :
+                         type === 'AGENT' ? '- Agent Project' :
+                         type === 'IP' ? '- Intellectual Property' :
+                         type === 'AUTO' ? '- Automation' :
+                         type === 'RSCH' ? '- Research' : ''}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -203,6 +222,18 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                 <button
                   onClick={() => handleAssigneeChange('')}
                   className="ml-2 text-purple-500 hover:text-purple-700"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {filters.projectType && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700">
+                Type: {filters.projectType}
+                <button
+                  onClick={() => handleProjectTypeChange('')}
+                  className="ml-2 text-orange-500 hover:text-orange-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
