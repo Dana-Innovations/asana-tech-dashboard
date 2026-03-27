@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ViewMode } from '../types/asana';
 import { Grid, List, Calendar, Users, TrendingUp } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { VersionBadge } from './VersionBadge';
 
 interface DashboardHeaderProps {
   viewMode: ViewMode;
@@ -75,6 +76,9 @@ export function DashboardHeader({
 
             {/* Theme Toggle */}
             <ThemeToggle />
+
+            {/* Version Badge */}
+            <VersionBadge />
           </div>
         </div>
 

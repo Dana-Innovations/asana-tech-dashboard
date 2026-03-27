@@ -9,7 +9,6 @@ import { StoplightView } from './components/StoplightView';
 import { DashboardHeader } from './components/DashboardHeader';
 import { FilterPanel } from './components/FilterPanel';
 import { LoadingSpinner } from './components/LoadingSpinner';
-import { VersionBadge } from './components/VersionBadge';
 import { FeedbackButton } from './components/FeedbackButton';
 
 export default function Dashboard() {
@@ -195,7 +194,6 @@ export default function Dashboard() {
       </main>
 
       {/* Fixed UI Elements */}
-      <VersionBadge />
       <FeedbackButton />
     </div>
   );
