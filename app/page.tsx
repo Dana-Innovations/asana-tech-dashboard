@@ -173,7 +173,7 @@ export default function Dashboard() {
         projects={projects}
       />
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="w-full px-4 py-6">
         {viewMode === 'kanban' ? (
           <KanbanView 
             projects={filteredProjects} 
