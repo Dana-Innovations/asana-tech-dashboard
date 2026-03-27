@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.2.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'feature', description: 'Enhanced feedback modal with structured form (Bug Report, Feature Request, General Feedback)' },
+      { type: 'feature', description: 'Added title, priority, and detailed description fields to feedback form' },
+      { type: 'improvement', description: 'Improved feedback task creation in Asana with better categorization and templates' },
+      { type: 'fix', description: 'Fixed Asana integration to create tasks in correct "(APP) Asana TI Dashboard" project' }
+    ]
+  },
+  {
     version: '1.1.1',
     date: '2026-03-27',
     changes: [

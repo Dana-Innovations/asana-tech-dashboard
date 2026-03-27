@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ASANA_TOKEN = process.env.NEXT_PUBLIC_ASANA_TOKEN;
-const FEEDBACK_PROJECT_ID = '1213751150054021'; // (APP) Asana TI Dashboard project
+const FEEDBACK_PROJECT_ID = '1213826126933603'; // (APP) Asana TI Dashboard project
 
 export async function POST(request: NextRequest) {
   try {
-    const { feedback, email, timestamp, url } = await request.json();
+    const { type, title, description, priority, email, timestamp, url } = await request.json();
 
-    if (!feedback?.trim()) {
+    if (!title?.trim() || !description?.trim()) {
       return NextResponse.json(
-        { error: 'Feedback is required' },
+        { error: 'Title and description are required' },
         { status: 400 }
       );
     }
@@ -22,24 +22,34 @@ export async function POST(request: NextRequest) {
     }
 
     // Create task in Asana
+    const typeEmoji = type === 'bug' ? '🐛' : type === 'feature' ? '💡' : '💬';
+    const typeLabel = type === 'bug' ? 'Bug' : type === 'feature' ? 'Feature Request' : 'Feedback';
+    
     const taskData = {
       data: {
-        name: `Feedback: ${feedback.slice(0, 50)}${feedback.length > 50 ? '...' : ''}`,
-        notes: `**User Feedback Submission**
+        name: `${typeEmoji} [${typeLabel}] ${title}`,
+        notes: `**${typeLabel} Submission from TI Dashboard**
 
-**Feedback:**
-${feedback}
+**Type:** ${typeLabel}
+**Priority:** ${priority.charAt(0).toUpperCase() + priority.slice(1)}
+**Title:** ${title}
 
-**Details:**
+**Description:**
+${description}
+
+**Submission Details:**
 - Email: ${email || 'Not provided'}
-- Timestamp: ${timestamp}
+- Submitted: ${new Date(timestamp).toLocaleString()}
 - URL: ${url}
-- Source: TI Dashboard Feedback Button
+- Source: Technology & Innovation Dashboard
 
 **Next Steps:**
-- Review feedback
-- Determine priority and category
-- Implement if appropriate`,
+${type === 'bug' ? 
+  '- [ ] Reproduce the issue\n- [ ] Identify root cause\n- [ ] Implement fix\n- [ ] Test and verify' :
+  type === 'feature' ?
+  '- [ ] Review feasibility\n- [ ] Prioritize against roadmap\n- [ ] Plan implementation\n- [ ] Design and develop' :
+  '- [ ] Review feedback\n- [ ] Determine appropriate action\n- [ ] Follow up if needed'
+}`,
         projects: [FEEDBACK_PROJECT_ID],
         completed: false,
       }
