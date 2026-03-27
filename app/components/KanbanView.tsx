@@ -202,28 +202,7 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
     }),
   });
 
-  const getColumnIcon = (columnId: string) => {
-    switch (columnId) {
-      case 'backlog':
-        return '📋';
-      case 'definition':
-        return '📝';
-      case 'development':
-        return '⚙️';
-      case 'testing':
-        return '🧪';
-      case 'pilot':
-        return '🚀';
-      case 'deployment':
-        return '🌐';
-      case 'completion':
-        return '✅';
-      case 'eol':
-        return '🔚';
-      default:
-        return '📋';
-    }
-  };
+
 
   return (
     <div
@@ -236,7 +215,6 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-lg">{getColumnIcon(column.id)}</span>
             <h3 className="font-semibold text-gray-900 dark:text-white">{column.title}</h3>
           </div>
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full">
@@ -249,7 +227,6 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
       <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
         {column.projects.length === 0 ? (
           <div className="text-center py-8 text-gray-400 dark:text-gray-500">
-            <div className="text-4xl mb-2">📭</div>
             <p className="text-sm">No projects</p>
           </div>
         ) : (

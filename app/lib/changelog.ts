@@ -9,6 +9,19 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.4.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'fix', description: 'Removed emoji icons from stage columns for more professional appearance' },
+      { type: 'fix', description: 'Removed mailbox icon from empty "No Projects" columns' },
+      { type: 'improvement', description: 'Moved team member filter to main filter bar for better accessibility' },
+      { type: 'fix', description: 'Removed non-functional date range filtering options' },
+      { type: 'improvement', description: 'Updated project types to match Sonance portfolio (Mobile App, Web Platform, API Integration, etc.)' },
+      { type: 'fix', description: 'Hidden "Off track" badges from project cards with no recent status updates (>30 days old)' },
+      { type: 'improvement', description: 'Streamlined filter interface for better user experience' }
+    ]
+  },
+  {
     version: '1.3.0',
     date: '2026-03-27',
     changes: [

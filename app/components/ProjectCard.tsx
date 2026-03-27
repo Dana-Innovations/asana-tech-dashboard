@@ -15,8 +15,18 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   const priority = getProjectPriority(project);
 
   const getStatusBadge = () => {
-    // Only show status badge if there's an actual status update
+    // Only show status badge if there's an actual status update and it's recent
     if (!project.current_status?.color) {
+      return null;
+    }
+
+    // Check if the status update is recent (within 30 days)
+    const statusDate = project.current_status?.created_at ? new Date(project.current_status.created_at) : null;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    // Don't show "Off Track" badge for old status updates
+    if (statusColor === 'red' && statusDate && statusDate < thirtyDaysAgo) {
       return null;
     }
 
@@ -36,6 +46,16 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   const getStatusText = () => {
     if (!project.current_status?.color) {
+      return null;
+    }
+
+    // Check if the status update is recent (within 30 days)
+    const statusDate = project.current_status?.created_at ? new Date(project.current_status.created_at) : null;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    // Don't show "Off Track" text for old status updates
+    if (statusColor === 'red' && statusDate && statusDate < thirtyDaysAgo) {
       return null;
     }
     

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, X, Users, Calendar } from 'lucide-react';
+import { Search, Filter, X, Users } from 'lucide-react';
 import { DashboardFilter, AsanaProject } from '../types/asana';
 
 interface FilterPanelProps {
@@ -27,7 +27,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     onFiltersChange({});
   };
 
-  const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.dateRange;
+  const hasActiveFilters = filters.status || filters.search || filters.assignee;
 
   // Get unique assignees from all projects
   const uniqueAssignees = Object.values(
@@ -101,6 +101,23 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               </div>
             </div>
 
+            {/* Team Member Filter */}
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4 text-gray-400" />
+              <select
+                value={filters.assignee || ''}
+                onChange={(e) => handleAssigneeChange(e.target.value)}
+                className="px-3 py-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All members</option>
+                {uniqueAssignees.map(assignee => (
+                  <option key={assignee.gid} value={assignee.gid}>
+                    {assignee.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Advanced Filters Toggle */}
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -129,58 +146,20 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
         {/* Advanced Filters */}
         {showAdvanced && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Assignee Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <Users className="w-4 h-4 inline mr-1" />
-                Team Member
-              </label>
-              <select
-                value={filters.assignee || ''}
-                onChange={(e) => handleAssigneeChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All members</option>
-                {uniqueAssignees.map(assignee => (
-                  <option key={assignee.gid} value={assignee.gid}>
-                    {assignee.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Due Date Range */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <Calendar className="w-4 h-4 inline mr-1" />
-                Due Date Range
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="date"
-                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Start date"
-                />
-                <input
-                  type="date"
-                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="End date"
-                />
-              </div>
-            </div>
-
-            {/* Project Type (Custom Field Example) */}
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Project Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Project Type
               </label>
               <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 <option value="">All types</option>
-                <option value="feature">Feature Development</option>
-                <option value="integration">Integration</option>
-                <option value="research">Research</option>
-                <option value="maintenance">Maintenance</option>
+                <option value="mobile-app">Mobile App</option>
+                <option value="web-platform">Web Platform</option>
+                <option value="api-integration">API Integration</option>
+                <option value="hardware-integration">Hardware Integration</option>
+                <option value="research-development">Research & Development</option>
+                <option value="infrastructure">Infrastructure</option>
               </select>
             </div>
           </div>
