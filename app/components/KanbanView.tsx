@@ -149,7 +149,7 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="overflow-x-auto pb-4">
-        <div className="inline-flex gap-4 min-h-[calc(100vh-140px)] px-2">
+        <div className="flex gap-3 min-h-[calc(100vh-140px)] px-2">
         {columns.map(column => (
           <KanbanColumn
             key={column.id}
@@ -228,7 +228,7 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
   return (
     <div
       ref={drop as any}
-      className={`min-h-[600px] w-[320px] flex-shrink-0 rounded-lg border-2 border-dashed transition-colors ${
+      className={`min-h-[600px] flex-1 min-w-[280px] rounded-lg border-2 border-dashed transition-colors ${
         column.color
       } ${isOver ? 'border-primary-400 dark:border-primary-500 bg-primary-50 dark:bg-primary-900' : ''}`}
     >
