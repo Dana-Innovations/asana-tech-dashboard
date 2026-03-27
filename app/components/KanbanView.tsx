@@ -148,8 +148,8 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="overflow-x-auto pb-4">
-        <div className="flex gap-3 min-h-[calc(100vh-140px)] px-2">
+      <div className="overflow-x-auto pb-6">
+        <div className="flex gap-3 min-h-[calc(100vh-180px)] px-2">
         {columns.map(column => (
           <KanbanColumn
             key={column.id}
@@ -207,7 +207,7 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
   return (
     <div
       ref={drop as any}
-      className={`min-h-[600px] flex-1 min-w-[280px] rounded-lg border-2 border-dashed transition-colors ${
+      className={`min-h-[calc(100vh-200px)] flex-1 min-w-[280px] rounded-lg border-2 border-dashed transition-colors ${
         column.color
       } ${isOver ? 'border-primary-400 dark:border-primary-500 bg-primary-50 dark:bg-primary-900' : ''}`}
     >
@@ -224,7 +224,7 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
       </div>
 
       {/* Projects */}
-      <div className="p-4 space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+      <div className="p-4 space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto pb-8">
         {column.projects.length === 0 ? (
           <div className="text-center py-8 text-gray-400 dark:text-gray-500">
             <p className="text-sm">No projects</p>

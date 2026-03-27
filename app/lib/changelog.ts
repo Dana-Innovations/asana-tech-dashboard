@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.5.1',
+    date: '2026-03-27',
+    changes: [
+      { type: 'fix', description: 'Fixed cards getting cut off at the bottom of the screen' },
+      { type: 'improvement', description: 'Improved column height calculations for better viewport utilization' },
+      { type: 'improvement', description: 'Added proper bottom padding to ensure all cards are fully visible when scrolling' }
+    ]
+  },
+  {
     version: '1.5.0',
     date: '2026-03-27',
     changes: [
