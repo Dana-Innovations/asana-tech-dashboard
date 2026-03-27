@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.7.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'feature', description: 'Added custom field badges to project cards showing Project Type, Department, T&I Stage, and T&I Priority' },
+      { type: 'improvement', description: 'Enhanced project card visual hierarchy with color-coded badges for quick identification' },
+      { type: 'improvement', description: 'Added compact badge view for smaller cards showing most critical information' },
+      { type: 'feature', description: 'Dynamic badge rendering based on available custom field data from Asana portfolio' }
+    ]
+  },
+  {
     version: '1.6.1',
     date: '2026-03-27',
     changes: [
