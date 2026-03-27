@@ -6,6 +6,7 @@ export interface AsanaProject {
     color: 'green' | 'yellow' | 'red';
     text: string;
     title: string;
+    created_at?: string;
   };
   custom_fields: AsanaCustomField[];
   team?: {
@@ -59,10 +60,6 @@ export interface DashboardFilter {
   status?: 'green' | 'yellow' | 'red';
   assignee?: string;
   search?: string;
-  dateRange?: {
-    start: Date;
-    end: Date;
-  };
 }
 
 export interface KanbanColumn {

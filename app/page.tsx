@@ -141,14 +141,7 @@ export default function Dashboard() {
       );
     }
 
-    // Date range filter
-    if (filters.dateRange) {
-      filtered = filtered.filter(project => {
-        if (!project.due_date) return false;
-        const dueDate = new Date(project.due_date);
-        return dueDate >= filters.dateRange!.start && dueDate <= filters.dateRange!.end;
-      });
-    }
+
 
     setFilteredProjects(filtered);
   };

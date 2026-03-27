@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.5.0',
+    date: '2026-03-27',
+    changes: [
+      { type: 'fix', description: 'Completed implementation of all 7 requested fixes from Asana tasks' },
+      { type: 'fix', description: 'Removed non-functional date range filtering code completely' },
+      { type: 'improvement', description: 'Streamlined filter interface and codebase maintenance' },
+      { type: 'feature', description: 'All bug fixes and improvements now deployed and operational' }
+    ]
+  },
+  {
     version: '1.4.0',
     date: '2026-03-27',
     changes: [

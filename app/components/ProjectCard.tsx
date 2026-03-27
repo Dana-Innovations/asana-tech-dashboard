@@ -120,11 +120,14 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-gray-900 dark:text-white truncate">{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
-              {getStatusBadge() && (
-                <span className={getStatusBadge()}>
-                  {getStatusText()}
-                </span>
-              )}
+              {(() => {
+                const statusBadgeClass = getStatusBadge();
+                return statusBadgeClass && (
+                  <span className={statusBadgeClass}>
+                    {getStatusText()}
+                  </span>
+                );
+              })()}
               {project.progress && (
                 <span className="text-xs text-gray-500">
                   {formatProgress(project)}
@@ -179,11 +182,14 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           )}
         </div>
 
-        {getStatusBadge() && (
-          <span className={getStatusBadge()}>
-            {getStatusText()}
-          </span>
-        )}
+        {(() => {
+          const statusBadgeClass = getStatusBadge();
+          return statusBadgeClass && (
+            <span className={statusBadgeClass}>
+              {getStatusText()}
+            </span>
+          );
+        })()}
       </div>
 
       {/* Progress Bar */}
