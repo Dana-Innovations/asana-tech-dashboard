@@ -129,15 +129,24 @@ export function StoplightView({ projects }: StoplightViewProps) {
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden overflow-x-auto">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-        <div className="grid grid-cols-12 gap-4 items-center">
+        <div className="grid grid-cols-16 gap-3 items-center min-w-[1200px]">
           <div className="col-span-1">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</span>
           </div>
-          <div className="col-span-4">
+          <div className="col-span-3">
             <SortButton field="name">Project Name</SortButton>
+          </div>
+          <div className="col-span-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</span>
+          </div>
+          <div className="col-span-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Dept</span>
+          </div>
+          <div className="col-span-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Priority</span>
           </div>
           <div className="col-span-2">
             <SortButton field="progress">Progress</SortButton>
@@ -147,6 +156,9 @@ export function StoplightView({ projects }: StoplightViewProps) {
           </div>
           <div className="col-span-2">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</span>
+          </div>
+          <div className="col-span-2">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">GitHub</span>
           </div>
           <div className="col-span-1">
             <SortButton field="modified_at">Updated</SortButton>
@@ -170,45 +182,92 @@ export function StoplightView({ projects }: StoplightViewProps) {
                 key={project.gid}
                 className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group"
               >
-                <div className="grid grid-cols-12 gap-4 items-center">
+                <div className="grid grid-cols-16 gap-3 items-center min-w-[1200px]">
                   {/* Status Indicator */}
                   <div className="col-span-1">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
                       {getStatusIndicator(project)}
                       {getPriorityIcon(project)}
                     </div>
                   </div>
 
                   {/* Project Name */}
-                  <div className="col-span-4">
+                  <div className="col-span-3">
                     <div className="flex items-center space-x-2">
                       <div className="min-w-0 flex-1">
                         <h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-primary-600 transition-colors">
                           {project.name}
                         </h4>
                         {project.current_status?.title && (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                             {project.current_status.title}
                           </p>
                         )}
                       </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ExternalLink className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
+                  </div>
+
+                  {/* Project Type */}
+                  <div className="col-span-1">
+                    {(() => {
+                      const typeField = project.custom_fields?.find(f => f.name === 'Project Type');
+                      const typeValue = typeField?.display_value || '-';
+                      const typeCode = typeValue.split(' - ')[0] || typeValue;
+                      
+                      return (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                          {typeCode}
+                        </span>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Department */}
+                  <div className="col-span-1">
+                    {(() => {
+                      const deptField = project.custom_fields?.find(f => f.name === 'Department');
+                      const deptValue = deptField?.display_value || '-';
+                      
+                      return deptValue !== '-' ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                          {deptValue}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      );
+                    })()}
+                  </div>
+
+                  {/* T&I Priority */}
+                  <div className="col-span-1">
+                    {(() => {
+                      const priorityField = project.custom_fields?.find(f => f.name === 'TI Priority');
+                      const priorityValue = priorityField?.display_value || '-';
+                      
+                      return priorityValue !== '-' ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+                          {priorityValue}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      );
+                    })()}
                   </div>
 
                   {/* Progress */}
                   <div className="col-span-2">
                     {project.progress ? (
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-xs">
                           <span className="text-gray-600 dark:text-gray-400">{project.progress.percentage}%</span>
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             {project.progress.completed_tasks}/{project.progress.total_tasks}
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
                           <div
-                            className={`h-2 rounded-full ${
+                            className={`h-1.5 rounded-full ${
                               project.progress.percentage >= 80 
                                 ? 'bg-success-500' 
                                 : project.progress.percentage >= 40 
@@ -226,10 +285,10 @@ export function StoplightView({ projects }: StoplightViewProps) {
 
                   {/* Due Date */}
                   <div className="col-span-2">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="w-4 h-4 text-gray-400" />
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="w-3 h-3 text-gray-400" />
                       <div>
-                        <div className="text-sm text-gray-900 dark:text-white">
+                        <div className="text-xs text-gray-900 dark:text-white">
                           {formatDate(project.due_date)}
                         </div>
                         {dueDateStatus && (
@@ -244,21 +303,21 @@ export function StoplightView({ projects }: StoplightViewProps) {
                   {/* Team */}
                   <div className="col-span-2">
                     {project.members.length > 0 ? (
-                      <div className="flex items-center space-x-2">
-                        <Users className="w-4 h-4 text-gray-400" />
+                      <div className="flex items-center space-x-1">
+                        <Users className="w-3 h-3 text-gray-400" />
                         <div className="flex -space-x-1">
-                          {project.members.slice(0, 3).map((member) => (
+                          {project.members.slice(0, 2).map((member) => (
                             <img
                               key={member.gid}
-                              src={member.photo?.image_128x128 || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=24`}
+                              src={member.photo?.image_128x128 || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=20`}
                               alt={member.name}
-                              className="w-6 h-6 rounded-full border-2 border-white"
+                              className="w-5 h-5 rounded-full border-2 border-white"
                               title={member.name}
                             />
                           ))}
-                          {project.members.length > 3 && (
-                            <div className="w-6 h-6 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center">
-                              <span className="text-xs text-gray-600">+{project.members.length - 3}</span>
+                          {project.members.length > 2 && (
+                            <div className="w-5 h-5 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center">
+                              <span className="text-xs text-gray-600">+{project.members.length - 2}</span>
                             </div>
                           )}
                         </div>
@@ -268,6 +327,30 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     )}
                   </div>
 
+                  {/* GitHub Repo */}
+                  <div className="col-span-2">
+                    {(() => {
+                      const githubField = project.custom_fields?.find(f => f.name === 'GitHub Repo');
+                      const githubUrl = githubField?.display_value;
+                      
+                      return githubUrl && githubUrl !== '-' ? (
+                        <a
+                          href={githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-1 text-xs text-primary-600 hover:text-primary-800 dark:text-primary-400"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span className="truncate max-w-[120px]">
+                            {githubUrl.split('/').slice(-1)[0].replace('.git', '')}
+                          </span>
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      );
+                    })()}
+                  </div>
+
                   {/* Updated */}
                   <div className="col-span-1">
                     <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -275,25 +358,6 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     </span>
                   </div>
                 </div>
-
-                {/* Custom Fields (Expandable) */}
-                {project.custom_fields && project.custom_fields.length > 0 && (
-                  <div className="mt-2 grid grid-cols-12 gap-4">
-                    <div className="col-span-12 ml-6">
-                      <div className="flex flex-wrap gap-2">
-                        {project.custom_fields.slice(0, 5).map((field) => (
-                          <span
-                            key={field.gid}
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700"
-                          >
-                            <span className="font-medium">{field.name}:</span>
-                            <span className="ml-1">{field.display_value}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })
