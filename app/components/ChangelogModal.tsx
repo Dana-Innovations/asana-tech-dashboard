@@ -36,9 +36,9 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="flex-shrink-0 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Github className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             <div>
@@ -59,7 +59,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(80vh-80px)]">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <div className="px-6 py-4">
             {changelog.map((entry, index) => (
               <div key={entry.version} className={index > 0 ? 'mt-8' : ''}>
@@ -101,7 +101,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <div className="flex-shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
           <div className="flex items-center justify-between">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Built with ❤️ for Technology & Innovation
