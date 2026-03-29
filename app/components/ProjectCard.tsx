@@ -127,17 +127,17 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
     
     // Find relevant custom fields for service links
     project.custom_fields.forEach(field => {
-      if (field.display_value && field.display_value !== '-' && field.display_value.startsWith('http')) {
+      if (field.display_value && field.display_value !== '-' && field.display_value !== 'null' && field.display_value.startsWith('http')) {
         const url = field.display_value;
         const fieldName = field.name.toLowerCase();
         
-        if (fieldName.includes('github')) {
+        if (fieldName.includes('github') || fieldName === 'github repo') {
           links.push({
             url,
             icon: <Github className="w-4 h-4" />,
             label: 'GitHub'
           });
-        } else if (fieldName.includes('supabase')) {
+        } else if (fieldName.includes('supabase') || fieldName === 'application database') {
           links.push({
             url,
             icon: <Database className="w-4 h-4" />,

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AsanaProject } from '../types/asana';
-import { X, Calendar, Users, Tag, FileText, ExternalLink, Save } from 'lucide-react';
+import { X, Calendar, Users, Tag, FileText, ExternalLink, Save, Github, Database, Triangle, Globe } from 'lucide-react';
 import { formatProgress, updateProjectCustomField } from '../lib/asana';
 
 interface ProjectModalProps {
@@ -18,6 +18,48 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
   const [isSaving, setIsSaving] = useState(false);
 
   if (!isOpen) return null;
+
+  // Helper function to render service links as icon buttons
+  const getServiceLinks = () => {
+    const links: Array<{url: string, icon: React.ReactNode, label: string}> = [];
+    
+    // Find relevant custom fields for service links
+    project.custom_fields.forEach(field => {
+      if (field.display_value && field.display_value !== '-' && field.display_value !== 'null' && field.display_value.startsWith('http')) {
+        const url = field.display_value;
+        const fieldName = field.name.toLowerCase();
+        
+        if (fieldName.includes('github') || fieldName === 'github repo') {
+          links.push({
+            url,
+            icon: <Github className="w-4 h-4" />,
+            label: 'GitHub'
+          });
+        } else if (fieldName.includes('supabase') || fieldName === 'application database') {
+          links.push({
+            url,
+            icon: <Database className="w-4 h-4" />,
+            label: 'Supabase'
+          });
+        } else if (fieldName.includes('vercel')) {
+          links.push({
+            url,
+            icon: <Triangle className="w-4 h-4" />,
+            label: 'Vercel'
+          });
+        } else {
+          // Generic external link for other URLs
+          links.push({
+            url,
+            icon: <Globe className="w-4 h-4" />,
+            label: field.name
+          });
+        }
+      }
+    });
+    
+    return links;
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -305,18 +347,9 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                             }`}>
                               {field.display_value}
                             </span>
-                          ) : field.name === 'GitHub Repo' && field.display_value.startsWith('http') ? (
-                            <a
-                              href={field.display_value}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center space-x-1 text-primary-600 hover:text-primary-800 dark:text-primary-400 text-sm"
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                              <span className="truncate max-w-[200px]">
-                                {field.display_value.split('/').slice(-1)[0].replace('.git', '')}
-                              </span>
-                            </a>
+                          ) : field.display_value && field.display_value !== '-' && field.display_value !== 'null' && field.display_value.startsWith('http') ? (
+                            // Service links will be rendered separately below
+                            null
                           ) : (
                             <span className="text-gray-900 dark:text-white">{field.display_value}</span>
                           )
@@ -326,6 +359,28 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                       </div>
                     )}
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service Links */}
+          {getServiceLinks().length > 0 && (
+            <div className="px-6 pb-4">
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Service Links</h4>
+              <div className="flex items-center space-x-2">
+                {getServiceLinks().map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center p-2 rounded-md border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                    title={`Open ${link.label}`}
+                  >
+                    {link.icon}
+                    <span className="ml-2 text-sm">{link.label}</span>
+                  </a>
                 ))}
               </div>
             </div>

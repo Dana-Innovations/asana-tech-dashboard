@@ -89,15 +89,19 @@ export class AsanaService {
             'custom_fields.name',
             'custom_fields.type',
             'custom_fields.display_value',
+            'custom_fields.people_value.gid',
+            'custom_fields.people_value.name',
+            'custom_fields.people_value.email',
+            'custom_fields.people_value.photo.image_128x128',
             'custom_fields.enum_options.gid',
             'custom_fields.enum_options.name',
             'custom_fields.enum_options.color',
             'team.gid',
             'team.name',
-            'members.gid',
-            'members.name',
-            'members.email',
-            'members.photo.image_128x128',
+            'owner.gid',
+            'owner.name',
+            'owner.email',
+            'owner.photo.image_128x128',
             'created_at',
             'modified_at',
             'due_date',
@@ -108,13 +112,38 @@ export class AsanaService {
 
       const projects = response.data.data;
       
-      // Return projects quickly without progress data first (for faster initial load)
-      const projectsWithBasicData: AsanaProject[] = projects.map((project: any) => ({
-        ...project,
-        custom_fields: project.custom_fields || [],
-        members: project.members || [],
-        progress: { completed_tasks: 0, total_tasks: 0, percentage: 0 } // Default progress
-      }));
+      // Process projects and extract deduplicated team members from Owner + Project Participants only
+      const projectsWithBasicData: AsanaProject[] = projects.map((project: any) => {
+        const members: any[] = [];
+        const memberGids = new Set<string>();
+
+        // Add owner if exists
+        if (project.owner) {
+          members.push(project.owner);
+          memberGids.add(project.owner.gid);
+        }
+
+        // Add project participants from custom field (avoiding duplicates by GID)
+        const participantsField = project.custom_fields?.find((field: any) => 
+          field.name === 'Project Participants'
+        );
+        
+        if (participantsField && participantsField.people_value) {
+          participantsField.people_value.forEach((participant: any) => {
+            if (!memberGids.has(participant.gid)) {
+              members.push(participant);
+              memberGids.add(participant.gid);
+            }
+          });
+        }
+
+        return {
+          ...project,
+          custom_fields: project.custom_fields || [],
+          members: members,
+          progress: { completed_tasks: 0, total_tasks: 0, percentage: 0 } // Default progress
+        };
+      });
 
       return projectsWithBasicData;
     } catch (error) {
@@ -273,25 +302,14 @@ export function getProjectStage(project: AsanaProject): string {
   );
 
   if (stageField && stageField.display_value) {
-    // Map display values to column IDs (supports both old and new naming)
+    // Map display values to column IDs (matching actual Asana enum values)
     const stageMap: Record<string, string> = {
-      // Current T&I Portfolio values
       'Backlog': 'backlog',
       'Definition': 'definition', 
       'Development': 'development',
-      'Testing': 'testing',
-      'Testing (Alpha)': 'testing',
-      'Alpha': 'testing',
-      'Pilot': 'pilot',
-      'Pilot (Beta)': 'pilot',
-      'Beta': 'pilot',
-      'Deployment': 'deployment',
-      'Deploy': 'deployment',
-      'Deploy / Sustain': 'completion',  // Actual value from T&I Portfolio
-      'Completion / Sustainment': 'completion',
-      'Completion': 'completion',
-      'Sustainment': 'completion',
-      'End of Life': 'eol',
+      'Testing (ALPHA)': 'testing',
+      'Testing / Pilot (BETA)': 'pilot',
+      'Deploy / Sustain': 'completion',
       'EOL': 'eol'
     };
 
@@ -315,15 +333,16 @@ export async function updateProjectStage(projectId: string, stage: string): Prom
       throw new Error('No Asana token available');
     }
 
-    // Map UI stages to T&I Stage field values
+    // Map UI stages to T&I Stage field values (matching actual Asana enum values)
     const stageMapping: { [key: string]: string } = {
       'backlog': 'Backlog',
       'definition': 'Definition', 
       'development': 'Development',
       'testing': 'Testing (ALPHA)',
       'pilot': 'Testing / Pilot (BETA)',
-      'deployment': 'Deployment',
-      'completion': 'Deploy / Sustain'
+      'deployment': 'Deploy / Sustain',
+      'completion': 'Deploy / Sustain',
+      'eol': 'EOL'
     };
 
     const tiStageValue = stageMapping[stage];
