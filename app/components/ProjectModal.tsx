@@ -28,7 +28,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
           const originalField = project.custom_fields.find(f => f.gid === editedField.gid);
           if (originalField && editedField.display_value !== originalField.display_value) {
             // Find the enum option ID for the new value
-            let fieldValue = editedField.display_value;
+            let fieldValue: string | null = editedField.display_value;
             if (editedField.type === 'enum' && editedField.enum_options) {
               const enumOption = editedField.enum_options.find(option => option.name === editedField.display_value);
               fieldValue = enumOption ? enumOption.gid : null;
