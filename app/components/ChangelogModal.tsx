@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Github, Zap, Bug, TrendingUp } from 'lucide-react';
 import { changelog, type ChangelogEntry } from '../lib/changelog';
 
@@ -10,7 +11,13 @@ interface ChangelogModalProps {
 }
 
 export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const getChangeIcon = (type: 'feature' | 'fix' | 'improvement') => {
     switch (type) {
@@ -34,7 +41,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden">
         {/* Header */}
@@ -115,6 +122,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
