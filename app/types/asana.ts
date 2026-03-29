@@ -57,12 +57,19 @@ export interface AsanaTask {
 }
 
 export interface DashboardFilter {
-  status?: 'green' | 'yellow' | 'red';
-  assignee?: string;
+  status?: ('green' | 'yellow' | 'red')[];
+  assignee?: string[];
   search?: string;
-  projectType?: string;
-  department?: string;
-  tiPriority?: string;
+  projectType?: string[];
+  department?: string[];
+  tiPriority?: string[];
+}
+
+export interface FilterPreset {
+  id: string;
+  name: string;
+  filters: DashboardFilter;
+  createdAt: Date;
 }
 
 export interface KanbanColumn {

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Search, Filter, X, Users } from 'lucide-react';
-import { DashboardFilter, AsanaProject } from '../types/asana';
+import { useState, useEffect } from 'react';
+import { Search, Filter, X, Settings, Save, Upload } from 'lucide-react';
+import { DashboardFilter, AsanaProject, FilterPreset } from '../types/asana';
 
 interface FilterPanelProps {
   filters: DashboardFilter;
@@ -9,39 +9,93 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showPresets, setShowPresets] = useState(false);
+  const [presets, setPresets] = useState<FilterPreset[]>([]);
+  const [newPresetName, setNewPresetName] = useState('');
+  const [showSavePreset, setShowSavePreset] = useState(false);
+
+  // Load presets from localStorage on mount
+  useEffect(() => {
+    const savedPresets = localStorage.getItem('dashboard-filter-presets');
+    if (savedPresets) {
+      try {
+        const parsedPresets = JSON.parse(savedPresets);
+        setPresets(parsedPresets.map((preset: any) => ({
+          ...preset,
+          createdAt: new Date(preset.createdAt)
+        })));
+      } catch (error) {
+        console.error('Error loading presets:', error);
+      }
+    }
+  }, []);
+
+  // Save presets to localStorage whenever presets change
+  useEffect(() => {
+    localStorage.setItem('dashboard-filter-presets', JSON.stringify(presets));
+  }, [presets]);
 
   const handleSearchChange = (search: string) => {
     onFiltersChange({ ...filters, search: search || undefined });
   };
 
-  const handleStatusChange = (status: 'green' | 'yellow' | 'red' | undefined) => {
-    onFiltersChange({ ...filters, status });
+  const toggleArrayFilter = <T extends string>(
+    filterKey: keyof DashboardFilter,
+    value: T
+  ) => {
+    const currentValues = (filters[filterKey] as T[]) || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter(v => v !== value)
+      : [...currentValues, value];
+    
+    onFiltersChange({
+      ...filters,
+      [filterKey]: newValues.length > 0 ? newValues : undefined
+    });
   };
 
-  const handleAssigneeChange = (assignee: string) => {
-    onFiltersChange({ ...filters, assignee: assignee || undefined });
+  const clearFilter = (filterKey: keyof DashboardFilter) => {
+    onFiltersChange({
+      ...filters,
+      [filterKey]: undefined
+    });
   };
 
-  const handleProjectTypeChange = (projectType: string) => {
-    onFiltersChange({ ...filters, projectType: projectType || undefined });
+  const clearAllFilters = () => {
+    onFiltersChange({ search: filters.search });
   };
 
-  const handleDepartmentChange = (department: string) => {
-    onFiltersChange({ ...filters, department: department || undefined });
+  const hasActiveFilters = () => {
+    return filters.status?.length || filters.assignee?.length || filters.projectType?.length || 
+           filters.department?.length || filters.tiPriority?.length || filters.search;
   };
 
-  const handleTiPriorityChange = (tiPriority: string) => {
-    onFiltersChange({ ...filters, tiPriority: tiPriority || undefined });
+  const savePreset = () => {
+    if (!newPresetName.trim()) return;
+    
+    const newPreset: FilterPreset = {
+      id: Date.now().toString(),
+      name: newPresetName.trim(),
+      filters: { ...filters },
+      createdAt: new Date()
+    };
+    
+    setPresets([...presets, newPreset]);
+    setNewPresetName('');
+    setShowSavePreset(false);
   };
 
-  const clearFilters = () => {
-    onFiltersChange({});
+  const loadPreset = (preset: FilterPreset) => {
+    onFiltersChange(preset.filters);
+    setShowPresets(false);
   };
 
-  const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.projectType || filters.department || filters.tiPriority;
+  const deletePreset = (presetId: string) => {
+    setPresets(presets.filter(p => p.id !== presetId));
+  };
 
-  // Get unique assignees from all projects
+  // Get unique values from all projects
   const uniqueAssignees = Object.values(
     projects.flatMap(project => project.members).reduce((acc, member) => {
       acc[member.gid] = { gid: member.gid, name: member.name };
@@ -49,33 +103,128 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     }, {} as Record<string, { gid: string; name: string }>)
   ).sort((a, b) => a.name.localeCompare(b.name));
 
-  // Get unique project types from all projects
   const uniqueProjectTypes = Array.from(new Set(
     projects.map(project => 
       project.custom_fields.find(field => field.name === 'Project Type')?.display_value
-    ).filter(Boolean)
+    ).filter((value): value is string => Boolean(value))
   )).sort();
 
-  // Get unique departments from all projects
   const uniqueDepartments = Array.from(new Set(
     projects.map(project => 
       project.custom_fields.find(field => field.name === 'Department')?.display_value
-    ).filter(Boolean)
+    ).filter((value): value is string => Boolean(value))
   )).sort();
 
-  // Get unique T&I priorities from all projects
   const uniqueTiPriorities = Array.from(new Set(
     projects.map(project => 
       project.custom_fields.find(field => field.name === 'TI Priority')?.display_value
-    ).filter(Boolean)
+    ).filter((value): value is string => Boolean(value))
   )).sort();
+
+  const statusOptions = [
+    { value: 'green' as const, label: 'On Track', colorClass: 'bg-success-500 hover:bg-success-600 text-white' },
+    { value: 'yellow' as const, label: 'At Risk', colorClass: 'bg-warning-500 hover:bg-warning-600 text-white' },
+    { value: 'red' as const, label: 'Off Track', colorClass: 'bg-danger-500 hover:bg-danger-600 text-white' }
+  ];
+
+  const BadgeGroup = ({ 
+    title, 
+    values, 
+    selectedValues, 
+    colorClass, 
+    onToggle 
+  }: {
+    title: string;
+    values: string[];
+    selectedValues?: string[];
+    colorClass?: string;
+    onToggle: (value: string) => void;
+  }) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-sonance-mist">
+        {title}
+      </label>
+      <div className="flex flex-wrap gap-2">
+        {values.map(value => {
+          const isSelected = selectedValues?.includes(value) || false;
+          return (
+            <button
+              key={value}
+              onClick={() => onToggle(value)}
+              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                isSelected
+                  ? colorClass || 'bg-sonance-gold text-sonance-charcoal'
+                  : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
+              }`}
+            >
+              {value}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const StatusBadgeGroup = () => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-sonance-mist">
+        Status
+      </label>
+      <div className="flex flex-wrap gap-2">
+        {statusOptions.map(option => {
+          const isSelected = filters.status?.includes(option.value) || false;
+          return (
+            <button
+              key={option.value}
+              onClick={() => toggleArrayFilter('status', option.value)}
+              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                isSelected
+                  ? option.colorClass
+                  : option.value === 'green' ? 'bg-success-50 text-success-600 hover:bg-success-100' :
+                    option.value === 'yellow' ? 'bg-warning-50 text-warning-600 hover:bg-warning-100' :
+                    'bg-danger-50 text-danger-600 hover:bg-danger-100'
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const MemberBadgeGroup = () => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-sonance-mist">
+        Team Members
+      </label>
+      <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+        {uniqueAssignees.map(assignee => {
+          const isSelected = filters.assignee?.includes(assignee.gid) || false;
+          return (
+            <button
+              key={assignee.gid}
+              onClick={() => toggleArrayFilter('assignee', assignee.gid)}
+              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                isSelected
+                  ? 'bg-purple-500 text-white'
+                  : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+              }`}
+            >
+              {assignee.name}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40">
       <div className="w-full px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 flex-1">
-            {/* Search */}
+            {/* Search - stays outside */}
             <div className="relative flex-1 max-w-lg">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -87,89 +236,107 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               />
             </div>
 
-            {/* Status Filter */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-sonance-mist font-medium">Status:</span>
-              <div className="flex space-x-1">
-                <button
-                  onClick={() => handleStatusChange(undefined)}
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                    !filters.status
-                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => handleStatusChange('green')}
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                    filters.status === 'green'
-                      ? 'bg-success-500 text-white'
-                      : 'bg-success-50 text-success-600 hover:bg-success-100'
-                  }`}
-                >
-                  On Track
-                </button>
-                <button
-                  onClick={() => handleStatusChange('yellow')}
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                    filters.status === 'yellow'
-                      ? 'bg-warning-500 text-white'
-                      : 'bg-warning-50 text-warning-600 hover:bg-warning-100'
-                  }`}
-                >
-                  At Risk
-                </button>
-                <button
-                  onClick={() => handleStatusChange('red')}
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                    filters.status === 'red'
-                      ? 'bg-danger-500 text-white'
-                      : 'bg-danger-50 text-danger-600 hover:bg-danger-100'
-                  }`}
-                >
-                  Off Track
-                </button>
-              </div>
-            </div>
-
-            {/* Team Member Filter */}
-            <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 text-gray-400" />
-              <select
-                value={filters.assignee || ''}
-                onChange={(e) => handleAssigneeChange(e.target.value)}
-                className="px-3 py-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All members</option>
-                {uniqueAssignees.map(assignee => (
-                  <option key={assignee.gid} value={assignee.gid}>
-                    {assignee.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Advanced Filters Toggle */}
+            {/* Filters Button */}
             <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                showAdvanced
-                  ? 'bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                showFilters
+                  ? 'bg-sonance-gold text-sonance-charcoal'
+                  : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
               }`}
             >
               <Filter className="w-4 h-4" />
               <span>Filters</span>
+              {hasActiveFilters() && !showFilters && (
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-sonance-gold text-sonance-charcoal rounded-full">
+                  {(filters.status?.length || 0) + (filters.assignee?.length || 0) + (filters.projectType?.length || 0) + (filters.department?.length || 0) + (filters.tiPriority?.length || 0)}
+                </span>
+              )}
             </button>
+
+            {/* Presets Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowPresets(!showPresets)}
+                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-lg bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 transition-colors"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Presets</span>
+              </button>
+
+              {showPresets && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-sonance-white dark:bg-sonance-charcoal border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg shadow-lg z-50">
+                  <div className="p-3">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-medium text-sonance-dark dark:text-sonance-silver">Filter Presets</span>
+                      <button
+                        onClick={() => setShowSavePreset(!showSavePreset)}
+                        className="text-xs text-sonance-gold hover:text-sonance-gold/80"
+                      >
+                        <Save className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {showSavePreset && (
+                      <div className="mb-3 p-2 border border-sonance-slate/20 rounded">
+                        <input
+                          type="text"
+                          placeholder="Preset name..."
+                          value={newPresetName}
+                          onChange={(e) => setNewPresetName(e.target.value)}
+                          className="w-full px-2 py-1 text-xs border border-sonance-slate/30 rounded mb-2"
+                          onKeyPress={(e) => e.key === 'Enter' && savePreset()}
+                        />
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={savePreset}
+                            className="px-2 py-1 text-xs bg-sonance-gold text-sonance-charcoal rounded"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setShowSavePreset(false)}
+                            className="px-2 py-1 text-xs text-sonance-mist"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-1 max-h-40 overflow-y-auto">
+                      {presets.length === 0 ? (
+                        <p className="text-xs text-sonance-mist italic">No saved presets</p>
+                      ) : (
+                        presets.map(preset => (
+                          <div key={preset.id} className="flex items-center justify-between p-2 hover:bg-sonance-slate/10 rounded">
+                            <button
+                              onClick={() => loadPreset(preset)}
+                              className="text-xs text-sonance-dark dark:text-sonance-silver hover:text-sonance-gold flex-1 text-left"
+                            >
+                              {preset.name}
+                            </button>
+                            <button
+                              onClick={() => deletePreset(preset.id)}
+                              className="text-xs text-sonance-mist hover:text-red-500"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Clear Filters */}
-          {hasActiveFilters && (
+          {hasActiveFilters() && (
             <button
-              onClick={clearFilters}
-              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              onClick={clearAllFilters}
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-mist hover:text-sonance-dark dark:hover:text-sonance-silver"
             >
               <X className="w-4 h-4" />
               <span>Clear</span>
@@ -177,75 +344,55 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
           )}
         </div>
 
-        {/* Advanced Filters */}
-        {showAdvanced && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Project Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Project Type
-              </label>
-              <select 
-                value={filters.projectType || ''}
-                onChange={(e) => handleProjectTypeChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All types</option>
-                {uniqueProjectTypes.map(type => (
-                  <option key={type} value={type}>
-                    {type} {type === 'APP' ? '- Application' : 
-                         type === 'KI' ? '- Key Initiative' :
-                         type === 'AGENT' ? '- Agent Project' :
-                         type === 'IP' ? '- Intellectual Property' :
-                         type === 'AUTO' ? '- Automation' :
-                         type === 'RSCH' ? '- Research' : ''}
-                  </option>
-                ))}
-              </select>
+        {/* Filters Panel */}
+        {showFilters && (
+          <div className="mt-4 pt-4 border-t border-sonance-slate/20 dark:border-sonance-slate/40">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <StatusBadgeGroup />
+              <MemberBadgeGroup />
+              
+              <BadgeGroup
+                title="Project Type"
+                values={uniqueProjectTypes}
+                selectedValues={filters.projectType}
+                colorClass="bg-blue-500 text-white hover:bg-blue-600"
+                onToggle={(value) => toggleArrayFilter('projectType', value)}
+              />
+              
+              <BadgeGroup
+                title="Department"
+                values={uniqueDepartments}
+                selectedValues={filters.department}
+                colorClass="bg-green-500 text-white hover:bg-green-600"
+                onToggle={(value) => toggleArrayFilter('department', value)}
+              />
+              
+              <BadgeGroup
+                title="T&I Priority"
+                values={uniqueTiPriorities}
+                selectedValues={filters.tiPriority}
+                colorClass="bg-red-500 text-white hover:bg-red-600"
+                onToggle={(value) => toggleArrayFilter('tiPriority', value)}
+              />
             </div>
 
-            {/* Department */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Department
-              </label>
-              <select 
-                value={filters.department || ''}
-                onChange={(e) => handleDepartmentChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All departments</option>
-                {uniqueDepartments.map(dept => (
-                  <option key={dept} value={dept}>
-                    {dept}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* T&I Priority */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                T&I Priority
-              </label>
-              <select 
-                value={filters.tiPriority || ''}
-                onChange={(e) => handleTiPriorityChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All priorities</option>
-                {uniqueTiPriorities.map(priority => (
-                  <option key={priority} value={priority}>
-                    Priority {priority}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Save Current Filters as Preset */}
+            {hasActiveFilters() && (
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => setShowSavePreset(!showSavePreset)}
+                  className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-gold hover:text-sonance-gold/80"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save as Preset</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {/* Active Filters Display */}
-        {hasActiveFilters && (
+        {hasActiveFilters() && (
           <div className="mt-4 flex flex-wrap gap-2">
             {filters.search && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
@@ -259,70 +406,69 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               </span>
             )}
             
-            {filters.status && (
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                filters.status === 'green' ? 'bg-success-50 text-success-700' :
-                filters.status === 'yellow' ? 'bg-warning-50 text-warning-700' :
+            {filters.status?.map(status => (
+              <span key={status} className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                status === 'green' ? 'bg-success-50 text-success-700' :
+                status === 'yellow' ? 'bg-warning-50 text-warning-700' :
                 'bg-danger-50 text-danger-700'
               }`}>
-                Status: {filters.status === 'green' ? 'On Track' : 
-                        filters.status === 'yellow' ? 'At Risk' : 'Off Track'}
+                {status === 'green' ? 'On Track' : status === 'yellow' ? 'At Risk' : 'Off Track'}
                 <button
-                  onClick={() => handleStatusChange(undefined)}
+                  onClick={() => toggleArrayFilter('status', status)}
                   className="ml-2 hover:opacity-70"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
-            )}
+            ))}
 
-            {filters.assignee && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
-                Assignee: {uniqueAssignees.find(a => a.gid === filters.assignee)?.name}
+            {filters.assignee?.map(assigneeId => (
+              <span key={assigneeId} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
+                {uniqueAssignees.find(a => a.gid === assigneeId)?.name}
                 <button
-                  onClick={() => handleAssigneeChange('')}
+                  onClick={() => toggleArrayFilter('assignee', assigneeId)}
                   className="ml-2 text-purple-500 hover:text-purple-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
-            )}
+            ))}
 
-            {filters.projectType && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700">
-                Type: {filters.projectType}
+            {filters.projectType?.map(type => (
+              <span key={type} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                {type}
                 <button
-                  onClick={() => handleProjectTypeChange('')}
-                  className="ml-2 text-orange-500 hover:text-orange-700"
+                  onClick={() => toggleArrayFilter('projectType', type)}
+                  className="ml-2 text-blue-500 hover:text-blue-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
-            )}
+            ))}
 
-            {filters.department && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                Department: {filters.department}
+            {filters.department?.map(dept => (
+              <span key={dept} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">
+                {dept}
                 <button
-                  onClick={() => handleDepartmentChange('')}
+                  onClick={() => toggleArrayFilter('department', dept)}
                   className="ml-2 text-green-500 hover:text-green-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
-            )}
+            ))}
 
-            {filters.tiPriority && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">
-                Priority: {filters.tiPriority}
+            {filters.tiPriority?.map(priority => (
+              <span key={priority} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">
+                Priority {priority}
                 <button
-                  onClick={() => handleTiPriorityChange('')}
+                  onClick={() => toggleArrayFilter('tiPriority', priority)}
                   className="ml-2 text-red-500 hover:text-red-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
-            )}
+            ))}
           </div>
         )}
       </div>

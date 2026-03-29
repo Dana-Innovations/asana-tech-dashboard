@@ -114,11 +114,11 @@ export default function Dashboard() {
   const applyFilters = () => {
     let filtered = [...projects];
 
-    // Status filter
-    if (filters.status) {
+    // Status filter - now handles arrays
+    if (filters.status && filters.status.length > 0) {
       filtered = filtered.filter(project => {
         const statusColor = project.current_status?.color;
-        return statusColor === filters.status;
+        return statusColor && filters.status!.includes(statusColor);
       });
     }
 
@@ -131,37 +131,36 @@ export default function Dashboard() {
       );
     }
 
-    // Assignee filter
-    if (filters.assignee) {
+    // Assignee filter - now handles arrays
+    if (filters.assignee && filters.assignee.length > 0) {
       filtered = filtered.filter(project =>
         project.members.some(member => 
-          member.gid === filters.assignee ||
-          member.name.toLowerCase().includes(filters.assignee!.toLowerCase())
+          filters.assignee!.includes(member.gid)
         )
       );
     }
 
-    // Project type filter
-    if (filters.projectType) {
+    // Project type filter - now handles arrays
+    if (filters.projectType && filters.projectType.length > 0) {
       filtered = filtered.filter(project => {
         const projectTypeField = project.custom_fields.find(field => field.name === 'Project Type');
-        return projectTypeField?.display_value === filters.projectType;
+        return projectTypeField?.display_value && filters.projectType!.includes(projectTypeField.display_value);
       });
     }
 
-    // Department filter
-    if (filters.department) {
+    // Department filter - now handles arrays
+    if (filters.department && filters.department.length > 0) {
       filtered = filtered.filter(project => {
         const departmentField = project.custom_fields.find(field => field.name === 'Department');
-        return departmentField?.display_value === filters.department;
+        return departmentField?.display_value && filters.department!.includes(departmentField.display_value);
       });
     }
 
-    // T&I Priority filter
-    if (filters.tiPriority) {
+    // T&I Priority filter - now handles arrays
+    if (filters.tiPriority && filters.tiPriority.length > 0) {
       filtered = filtered.filter(project => {
         const tiPriorityField = project.custom_fields.find(field => field.name === 'TI Priority');
-        return tiPriorityField?.display_value === filters.tiPriority;
+        return tiPriorityField?.display_value && filters.tiPriority!.includes(tiPriorityField.display_value);
       });
     }
 
