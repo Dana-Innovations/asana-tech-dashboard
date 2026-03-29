@@ -9,6 +9,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.8.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'feature', description: 'Complete Project Metadata Editing System - Real-time drag & drop project stage updates via Asana API' },
+      { type: 'feature', description: 'Full custom field editing in ProjectModal with dropdown selectors for Project Type, Department, T&I Priority' },
+      { type: 'feature', description: 'Enhanced Stoplight View - 16-column portfolio spreadsheet with Type, Department, Priority, GitHub links' },
+      { type: 'feature', description: 'Advanced Filter System - Department and T&I Priority filters with 3-column layout' },
+      { type: 'improvement', description: 'Sticky Header Navigation - Header stays at top when scrolling with backdrop blur effect' },
+      { type: 'improvement', description: 'Enhanced Dark Mode Support - Better project card prominence and visibility' },
+      { type: 'improvement', description: 'Professional Visual Polish - Clean solid borders, gold hover effects, styled buttons' },
+      { type: 'improvement', description: 'Real Asana API Integration - Live updateProjectStage() and updateProjectCustomField() functions' },
+      { type: 'improvement', description: 'Color-coded badges for Project Type (blue), Department (green), Priority (red)' },
+      { type: 'fix', description: 'Converted text links to proper styled buttons with hover states and accessibility' },
+      { type: 'improvement', description: 'GitHub repository links now clickable with proper styling and external link icons' },
+      { type: 'improvement', description: 'Enhanced component architecture with loading states and error handling' }
+    ]
+  },
+  {
     version: '1.7.0',
     date: '2026-03-27',
     changes: [
