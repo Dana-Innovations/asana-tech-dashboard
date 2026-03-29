@@ -61,6 +61,8 @@ export interface DashboardFilter {
   assignee?: string;
   search?: string;
   projectType?: string;
+  department?: string;
+  tiPriority?: string;
 }
 
 export interface KanbanColumn {

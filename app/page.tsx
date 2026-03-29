@@ -149,6 +149,22 @@ export default function Dashboard() {
       });
     }
 
+    // Department filter
+    if (filters.department) {
+      filtered = filtered.filter(project => {
+        const departmentField = project.custom_fields.find(field => field.name === 'Department');
+        return departmentField?.display_value === filters.department;
+      });
+    }
+
+    // T&I Priority filter
+    if (filters.tiPriority) {
+      filtered = filtered.filter(project => {
+        const tiPriorityField = project.custom_fields.find(field => field.name === 'TI Priority');
+        return tiPriorityField?.display_value === filters.tiPriority;
+      });
+    }
+
     setFilteredProjects(filtered);
   };
 

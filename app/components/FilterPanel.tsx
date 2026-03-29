@@ -27,11 +27,19 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     onFiltersChange({ ...filters, projectType: projectType || undefined });
   };
 
+  const handleDepartmentChange = (department: string) => {
+    onFiltersChange({ ...filters, department: department || undefined });
+  };
+
+  const handleTiPriorityChange = (tiPriority: string) => {
+    onFiltersChange({ ...filters, tiPriority: tiPriority || undefined });
+  };
+
   const clearFilters = () => {
     onFiltersChange({});
   };
 
-  const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.projectType;
+  const hasActiveFilters = filters.status || filters.search || filters.assignee || filters.projectType || filters.department || filters.tiPriority;
 
   // Get unique assignees from all projects
   const uniqueAssignees = Object.values(
@@ -45,6 +53,20 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   const uniqueProjectTypes = Array.from(new Set(
     projects.map(project => 
       project.custom_fields.find(field => field.name === 'Project Type')?.display_value
+    ).filter(Boolean)
+  )).sort();
+
+  // Get unique departments from all projects
+  const uniqueDepartments = Array.from(new Set(
+    projects.map(project => 
+      project.custom_fields.find(field => field.name === 'Department')?.display_value
+    ).filter(Boolean)
+  )).sort();
+
+  // Get unique T&I priorities from all projects
+  const uniqueTiPriorities = Array.from(new Set(
+    projects.map(project => 
+      project.custom_fields.find(field => field.name === 'TI Priority')?.display_value
     ).filter(Boolean)
   )).sort();
 
@@ -157,7 +179,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
         {/* Advanced Filters */}
         {showAdvanced && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Project Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -177,6 +199,44 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                          type === 'IP' ? '- Intellectual Property' :
                          type === 'AUTO' ? '- Automation' :
                          type === 'RSCH' ? '- Research' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Department */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Department
+              </label>
+              <select 
+                value={filters.department || ''}
+                onChange={(e) => handleDepartmentChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All departments</option>
+                {uniqueDepartments.map(dept => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* T&I Priority */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                T&I Priority
+              </label>
+              <select 
+                value={filters.tiPriority || ''}
+                onChange={(e) => handleTiPriorityChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All priorities</option>
+                {uniqueTiPriorities.map(priority => (
+                  <option key={priority} value={priority}>
+                    Priority {priority}
                   </option>
                 ))}
               </select>
@@ -234,6 +294,30 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                 <button
                   onClick={() => handleProjectTypeChange('')}
                   className="ml-2 text-orange-500 hover:text-orange-700"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {filters.department && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">
+                Department: {filters.department}
+                <button
+                  onClick={() => handleDepartmentChange('')}
+                  className="ml-2 text-green-500 hover:text-green-700"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {filters.tiPriority && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">
+                Priority: {filters.tiPriority}
+                <button
+                  onClick={() => handleTiPriorityChange('')}
+                  className="ml-2 text-red-500 hover:text-red-700"
                 >
                   <X className="w-3 h-3" />
                 </button>
