@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.10.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Brand compliance: Switched font from Inter to Montserrat per brand.sonance.com guidelines' },
+      { type: 'improvement', description: 'Brand compliance: Sharp corners (0-4px radius) on all buttons, badges, cards, and modals' },
+      { type: 'improvement', description: 'Brand compliance: Typography updated — medium weight headings with -0.02em tracking' },
+      { type: 'improvement', description: 'Brand compliance: Refined visual polish across all components for premium aesthetic' },
+    ]
+  },
+  {
     version: '1.9.1',
     date: '2026-03-29',
     changes: [
