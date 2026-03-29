@@ -9,6 +9,21 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.9.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'fix', description: 'Fixed filter preset save — Save button now properly prompts for name and stores combos to localStorage' },
+      { type: 'fix', description: 'Moved status badge below project title to prevent name cutoff on project cards' },
+      { type: 'fix', description: 'Removed redundant "More Details" button — click project title to open modal instead' },
+      { type: 'improvement', description: 'Increased Kanban column width from 280px to 340px for better readability' },
+      { type: 'improvement', description: 'Converted GitHub/Supabase/Vercel raw URLs to styled icon buttons on project cards' },
+      { type: 'feature', description: 'Enhanced Stoplight view with complete metadata columns including T&I Stage' },
+      { type: 'feature', description: 'Consolidated all filters inside Filters panel with badge-style multi-select' },
+      { type: 'feature', description: 'Filter presets system — save, load, and delete custom filter combinations' },
+      { type: 'fix', description: '"Open in Asana" button now links directly to the project in Asana' },
+    ]
+  },
+  {
     version: '1.8.0',
     date: '2026-03-29',
     changes: [
