@@ -310,17 +310,119 @@ export function getProjectStage(project: AsanaProject): string {
 
 export async function updateProjectStage(projectId: string, stage: string): Promise<void> {
   try {
-    // For now, just log the update instead of making API calls
-    // This prevents errors while we test the UI
-    console.log(`Would update project ${projectId} to stage: ${stage}`);
+    const token = process.env.NEXT_PUBLIC_ASANA_TOKEN;
+    if (!token) {
+      throw new Error('No Asana token available');
+    }
+
+    // Map UI stages to T&I Stage field values
+    const stageMapping: { [key: string]: string } = {
+      'backlog': 'Backlog',
+      'definition': 'Definition', 
+      'development': 'Development',
+      'testing': 'Testing (ALPHA)',
+      'pilot': 'Testing / Pilot (BETA)',
+      'deployment': 'Deployment',
+      'completion': 'Deploy / Sustain'
+    };
+
+    const tiStageValue = stageMapping[stage];
+    if (!tiStageValue) {
+      throw new Error(`Unknown stage: ${stage}`);
+    }
+
+    // First, get the project to find the T&I Stage custom field ID
+    const projectResponse = await fetch(`https://app.asana.com/api/1.0/projects/${projectId}?opt_fields=custom_fields.gid,custom_fields.name,custom_fields.enum_options.gid,custom_fields.enum_options.name`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!projectResponse.ok) {
+      throw new Error(`Failed to get project: ${projectResponse.statusText}`);
+    }
+
+    const project = await projectResponse.json();
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // TODO: Implement actual API call once we test the custom field setup
+    // Find the T&I Stage custom field
+    const tiStageField = project.data.custom_fields?.find((field: any) => 
+      field.name === 'T&I Stage' || field.name === 'TI Stage'
+    );
+
+    if (!tiStageField) {
+      throw new Error('T&I Stage custom field not found on project');
+    }
+
+    // Find the enum option for the stage value
+    const enumOption = tiStageField.enum_options?.find((option: any) => 
+      option.name === tiStageValue
+    );
+
+    if (!enumOption) {
+      throw new Error(`Stage value '${tiStageValue}' not found in T&I Stage field options`);
+    }
+
+    // Update the project's custom field
+    const updateResponse = await fetch(`https://app.asana.com/api/1.0/projects/${projectId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          custom_fields: {
+            [tiStageField.gid]: enumOption.gid
+          }
+        }
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.text();
+      throw new Error(`Failed to update project stage: ${updateResponse.statusText} - ${errorData}`);
+    }
+
+    console.log(`Successfully updated project ${projectId} to T&I Stage: ${tiStageValue}`);
     
   } catch (error) {
     console.error('Error updating project stage:', error);
+    throw error;
+  }
+}
+
+export async function updateProjectCustomField(projectId: string, fieldId: string, value: any): Promise<void> {
+  try {
+    const token = process.env.NEXT_PUBLIC_ASANA_TOKEN;
+    if (!token) {
+      throw new Error('No Asana token available');
+    }
+
+    const response = await fetch(`https://app.asana.com/api/1.0/projects/${projectId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          custom_fields: {
+            [fieldId]: value
+          }
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Failed to update custom field: ${response.statusText} - ${errorData}`);
+    }
+
+    console.log(`Successfully updated project ${projectId} custom field ${fieldId}`);
+    
+  } catch (error) {
+    console.error('Error updating custom field:', error);
     throw error;
   }
 }

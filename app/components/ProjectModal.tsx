@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { AsanaProject } from '../types/asana';
-import { X, Calendar, Users, Tag, FileText, ExternalLink } from 'lucide-react';
-import { formatProgress } from '../lib/asana';
+import { X, Calendar, Users, Tag, FileText, ExternalLink, Save } from 'lucide-react';
+import { formatProgress, updateProjectCustomField } from '../lib/asana';
 
 interface ProjectModalProps {
   project: AsanaProject;
@@ -15,19 +15,60 @@ interface ProjectModalProps {
 export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModalProps) {
   const [editedProject, setEditedProject] = useState<AsanaProject>(project);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSave = () => {
-    if (onUpdate) {
-      onUpdate(editedProject);
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // Update any changed custom fields
+      if (editedProject.custom_fields && project.custom_fields) {
+        for (const editedField of editedProject.custom_fields) {
+          const originalField = project.custom_fields.find(f => f.gid === editedField.gid);
+          if (originalField && editedField.display_value !== originalField.display_value) {
+            // Find the enum option ID for the new value
+            let fieldValue = editedField.display_value;
+            if (editedField.type === 'enum' && editedField.enum_options) {
+              const enumOption = editedField.enum_options.find(option => option.name === editedField.display_value);
+              fieldValue = enumOption ? enumOption.gid : null;
+            }
+            
+            await updateProjectCustomField(project.gid, editedField.gid, fieldValue);
+          }
+        }
+      }
+
+      if (onUpdate) {
+        onUpdate(editedProject);
+      }
+      setIsEditing(false);
+      
+      // Refresh the page to show updated data
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
-    setIsEditing(false);
   };
 
   const handleCancel = () => {
     setEditedProject(project);
     setIsEditing(false);
+  };
+
+  const handleCustomFieldChange = (fieldId: string, value: string) => {
+    setEditedProject(prev => ({
+      ...prev,
+      custom_fields: prev.custom_fields?.map(field => 
+        field.gid === fieldId 
+          ? { ...field, display_value: value }
+          : field
+      ) || []
+    }));
   };
 
   return (
@@ -52,13 +93,20 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
               <>
                 <button
                   onClick={handleSave}
-                  className="btn-primary text-sm"
+                  disabled={isSaving}
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-sonance-gold text-white text-sm font-medium rounded-md hover:bg-sonance-gold/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Save
+                  {isSaving ? (
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="btn-secondary text-sm"
+                  disabled={isSaving}
+                  className="btn-secondary text-sm disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -68,7 +116,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                 onClick={() => setIsEditing(true)}
                 className="btn-secondary text-sm"
               >
-                Edit
+                Edit Metadata
               </button>
             )}
             
@@ -204,12 +252,79 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
           {/* Custom Fields */}
           {project.custom_fields && project.custom_fields.length > 0 && (
             <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Custom Fields</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {project.custom_fields.map((field) => (
-                  <div key={field.gid} className="flex justify-between items-start">
-                    <span className="font-medium text-gray-700 dark:text-gray-300">{field.name}:</span>
-                    <span className="text-gray-900 dark:text-white ml-2">{field.display_value || 'Not set'}</span>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+                Project Metadata
+                {isEditing && <span className="text-sm font-normal text-gray-500 ml-2">(Click to edit)</span>}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {editedProject.custom_fields?.map((field) => (
+                  <div key={field.gid} className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {field.name}
+                    </label>
+                    
+                    {isEditing ? (
+                      // Edit mode - show form controls
+                      field.type === 'enum' && field.enum_options ? (
+                        <select
+                          value={field.display_value || ''}
+                          onChange={(e) => handleCustomFieldChange(field.gid, e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold"
+                        >
+                          <option value="">Select {field.name}</option>
+                          {field.enum_options.map((option) => (
+                            <option key={option.gid} value={option.name}>
+                              {option.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : field.type === 'text' ? (
+                        <input
+                          type="text"
+                          value={field.display_value || ''}
+                          onChange={(e) => handleCustomFieldChange(field.gid, e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold"
+                          placeholder={`Enter ${field.name}`}
+                        />
+                      ) : (
+                        <div className="px-3 py-2 bg-gray-100 dark:bg-gray-600 rounded-md text-gray-500 dark:text-gray-400">
+                          {field.display_value || 'Not editable'}
+                        </div>
+                      )
+                    ) : (
+                      // View mode - show current values with badges
+                      <div className="flex items-center">
+                        {field.display_value ? (
+                          ['Project Type', 'Department', 'TI Priority', 'T&I Priority'].includes(field.name) ? (
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              field.name === 'Project Type' 
+                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                                : field.name === 'Department' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            }`}>
+                              {field.display_value}
+                            </span>
+                          ) : field.name === 'GitHub Repo' && field.display_value.startsWith('http') ? (
+                            <a
+                              href={field.display_value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center space-x-1 text-primary-600 hover:text-primary-800 dark:text-primary-400 text-sm"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              <span className="truncate max-w-[200px]">
+                                {field.display_value.split('/').slice(-1)[0].replace('.git', '')}
+                              </span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-900 dark:text-white">{field.display_value}</span>
+                          )
+                        ) : (
+                          <span className="text-gray-500 dark:text-gray-400 italic">Not set</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
