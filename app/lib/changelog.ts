@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.9.1',
+    date: '2026-03-29',
+    changes: [
+      { type: 'fix', description: 'Team list now pulls only from Owner + Project Participants — no more duplicates' },
+      { type: 'fix', description: 'GitHub/Supabase/Vercel links now display as styled icon buttons instead of raw URLs' },
+      { type: 'fix', description: 'Drag & drop now persists — projects stay in new column and sync T&I Stage to Asana API' },
+    ]
+  },
+  {
     version: '1.9.0',
     date: '2026-03-29',
     changes: [
