@@ -14,6 +14,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   const [presets, setPresets] = useState<FilterPreset[]>([]);
   const [newPresetName, setNewPresetName] = useState('');
   const [showSavePreset, setShowSavePreset] = useState(false);
+  const [showSaveInFilters, setShowSaveInFilters] = useState(false);
 
   // Load presets from localStorage on mount
   useEffect(() => {
@@ -84,6 +85,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     setPresets([...presets, newPreset]);
     setNewPresetName('');
     setShowSavePreset(false);
+    setShowSaveInFilters(false);
   };
 
   const loadPreset = (preset: FilterPreset) => {
@@ -380,12 +382,42 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             {hasActiveFilters() && (
               <div className="mt-4 flex justify-end">
                 <button
-                  onClick={() => setShowSavePreset(!showSavePreset)}
+                  onClick={() => setShowSaveInFilters(!showSaveInFilters)}
                   className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-gold hover:text-sonance-gold/80"
                 >
                   <Save className="w-4 h-4" />
                   <span>Save as Preset</span>
                 </button>
+                {showSaveInFilters && (
+                  <div className="mt-3 p-3 border border-sonance-slate/20 dark:border-sonance-slate/40 rounded-lg bg-sonance-white dark:bg-sonance-charcoal">
+                    <input
+                      type="text"
+                      placeholder="Enter preset name..."
+                      value={newPresetName}
+                      onChange={(e) => setNewPresetName(e.target.value)}
+                      className="w-full px-3 py-2 text-sm border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors mb-3"
+                      onKeyPress={(e) => e.key === 'Enter' && savePreset()}
+                    />
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={savePreset}
+                        className="px-3 py-2 text-sm bg-sonance-gold text-sonance-charcoal rounded-lg font-medium hover:bg-sonance-gold/90 transition-colors"
+                        disabled={!newPresetName.trim()}
+                      >
+                        Save Preset
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSaveInFilters(false);
+                          setNewPresetName('');
+                        }}
+                        className="px-3 py-2 text-sm text-sonance-mist hover:text-sonance-dark dark:hover:text-sonance-silver transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

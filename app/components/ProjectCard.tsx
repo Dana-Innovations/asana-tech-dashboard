@@ -1,7 +1,7 @@
-import { useState } from 'react';
+
 import { AsanaProject } from '../types/asana';
 import { getStatusColor, formatProgress, getProjectPriority } from '../lib/asana';
-import { Calendar, Users, CheckCircle, Clock, AlertTriangle, Target } from 'lucide-react';
+import { Calendar, Users, CheckCircle, Clock, AlertTriangle, Target, Github, Database, Triangle, Globe, ExternalLink } from 'lucide-react';
 
 interface ProjectCardProps {
   project: AsanaProject;
@@ -10,7 +10,6 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, compact = false, onClick }: ProjectCardProps) {
-  const [showDetails, setShowDetails] = useState(false);
   const statusColor = getStatusColor(project);
   const priority = getProjectPriority(project);
 
@@ -122,6 +121,63 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   const dueDate = formatDueDate(project.due_date);
 
+  // Helper function to render service links as icon buttons
+  const getServiceLinks = () => {
+    const links: Array<{url: string, icon: React.ReactNode, label: string}> = [];
+    
+    // Find relevant custom fields for service links
+    project.custom_fields.forEach(field => {
+      if (field.display_value && field.display_value !== '-' && field.display_value.startsWith('http')) {
+        const url = field.display_value;
+        const fieldName = field.name.toLowerCase();
+        
+        if (fieldName.includes('github')) {
+          links.push({
+            url,
+            icon: <Github className="w-4 h-4" />,
+            label: 'GitHub'
+          });
+        } else if (fieldName.includes('supabase')) {
+          links.push({
+            url,
+            icon: <Database className="w-4 h-4" />,
+            label: 'Supabase'
+          });
+        } else if (fieldName.includes('vercel')) {
+          links.push({
+            url,
+            icon: <Triangle className="w-4 h-4" />,
+            label: 'Vercel'
+          });
+        } else {
+          // Generic external link for other URLs
+          links.push({
+            url,
+            icon: <Globe className="w-4 h-4" />,
+            label: field.name
+          });
+        }
+      }
+    });
+    
+    return links.length > 0 ? (
+      <div className="flex items-center space-x-1 mt-2">
+        {links.map((link, index) => (
+          <a
+            key={index}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center p-1.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+            title={`Open ${link.label}`}
+          >
+            {link.icon}
+          </a>
+        ))}
+      </div>
+    ) : null;
+  };
+
   if (compact) {
     return (
       <div 
@@ -159,6 +215,8 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
                 </span>
               )}
             </div>
+            {/* Service Links */}
+            {getServiceLinks()}
           </div>
           
           <div className="flex items-center space-x-2">
@@ -193,28 +251,33 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       onClick={onClick}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2">
-            <h4 className="font-semibold text-gray-900 dark:text-white truncate">{project.name}</h4>
-            {getPriorityIcon()}
+      <div className="mb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-2">
+              <h4 className="font-semibold text-gray-900 dark:text-white truncate">{project.name}</h4>
+              {getPriorityIcon()}
+            </div>
           </div>
-          
-          {project.current_status?.title && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-              {project.current_status.title}
-            </p>
-          )}
         </div>
-
+        
+        {/* Status Badge - moved below title */}
         {(() => {
           const statusBadgeClass = getStatusBadge();
           return statusBadgeClass && (
-            <span className={statusBadgeClass}>
-              {getStatusText()}
-            </span>
+            <div className="mt-2">
+              <span className={statusBadgeClass}>
+                {getStatusText()}
+              </span>
+            </div>
           );
         })()}
+        
+        {project.current_status?.title && (
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
+            {project.current_status.title}
+          </p>
+        )}
       </div>
 
       {/* Custom Field Badges */}
@@ -240,6 +303,9 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           </span>
         )}
       </div>
+
+      {/* Service Links */}
+      {getServiceLinks()}
 
       {/* Progress Bar */}
       {project.progress && (
@@ -311,7 +377,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+      <div className="flex items-center mt-3 pt-3 border-t border-gray-100">
         <div className="flex items-center space-x-2">
           {project.completed && (
             <CheckCircle className="w-4 h-4 text-success-500" />
@@ -320,21 +386,9 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
             Updated {new Date(project.modified_at).toLocaleDateString()}
           </span>
         </div>
-        
-        <button
-          onClick={() => setShowDetails(!showDetails)}
-          className="inline-flex items-center px-3 py-1 border border-sonance-gold/50 text-xs font-medium rounded-md text-sonance-gold hover:bg-sonance-gold hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sonance-gold focus:ring-offset-2"
-        >
-          {showDetails ? 'Less' : 'More'} Details
-        </button>
       </div>
 
-      {/* Expanded Details */}
-      {showDetails && project.notes && (
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <p className="text-sm text-gray-600">{project.notes}</p>
-        </div>
-      )}
+
     </div>
   );
 }

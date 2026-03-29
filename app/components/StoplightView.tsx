@@ -12,7 +12,11 @@ import {
   Clock, 
   Target,
   ArrowUpDown,
-  ExternalLink
+  ExternalLink,
+  Github,
+  Database,
+  Triangle,
+  Globe
 } from 'lucide-react';
 
 interface StoplightViewProps {
@@ -132,7 +136,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden overflow-x-auto">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-        <div className="grid grid-cols-16 gap-3 items-center min-w-[1200px]">
+        <div className="grid grid-cols-17 gap-3 items-center min-w-[1400px]">
           <div className="col-span-1">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</span>
           </div>
@@ -148,6 +152,9 @@ export function StoplightView({ projects }: StoplightViewProps) {
           <div className="col-span-1">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Priority</span>
           </div>
+          <div className="col-span-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">T&I Stage</span>
+          </div>
           <div className="col-span-2">
             <SortButton field="progress">Progress</SortButton>
           </div>
@@ -158,7 +165,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</span>
           </div>
           <div className="col-span-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">GitHub</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Services</span>
           </div>
           <div className="col-span-1">
             <SortButton field="modified_at">Updated</SortButton>
@@ -182,7 +189,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
                 key={project.gid}
                 className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group"
               >
-                <div className="grid grid-cols-16 gap-3 items-center min-w-[1200px]">
+                <div className="grid grid-cols-17 gap-3 items-center min-w-[1400px]">
                   {/* Status Indicator */}
                   <div className="col-span-1">
                     <div className="flex items-center space-x-1">
@@ -248,6 +255,22 @@ export function StoplightView({ projects }: StoplightViewProps) {
                       return priorityValue !== '-' ? (
                         <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
                           {priorityValue}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      );
+                    })()}
+                  </div>
+
+                  {/* T&I Stage */}
+                  <div className="col-span-1">
+                    {(() => {
+                      const stageField = project.custom_fields?.find(f => f.name === 'T&I Stage');
+                      const stageValue = stageField?.display_value || '-';
+                      
+                      return stageValue !== '-' ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                          {stageValue}
                         </span>
                       ) : (
                         <span className="text-gray-400">-</span>
@@ -327,24 +350,54 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     )}
                   </div>
 
-                  {/* GitHub Repo */}
+                  {/* Service Links */}
                   <div className="col-span-2">
                     {(() => {
-                      const githubField = project.custom_fields?.find(f => f.name === 'GitHub Repo');
-                      const githubUrl = githubField?.display_value;
+                      const serviceLinks: Array<{url: string, icon: React.ReactNode, label: string}> = [];
                       
-                      return githubUrl && githubUrl !== '-' ? (
-                        <a
-                          href={githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-1 text-xs text-primary-600 hover:text-primary-800 dark:text-primary-400"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          <span className="truncate max-w-[120px]">
-                            {githubUrl.split('/').slice(-1)[0].replace('.git', '')}
-                          </span>
-                        </a>
+                      // Check for various service URLs in custom fields
+                      project.custom_fields.forEach(field => {
+                        if (field.display_value && field.display_value !== '-' && field.display_value.startsWith('http')) {
+                          const url = field.display_value;
+                          const fieldName = field.name.toLowerCase();
+                          
+                          if (fieldName.includes('github')) {
+                            serviceLinks.push({
+                              url,
+                              icon: <Github className="w-3 h-3" />,
+                              label: 'GitHub'
+                            });
+                          } else if (fieldName.includes('supabase')) {
+                            serviceLinks.push({
+                              url,
+                              icon: <Database className="w-3 h-3" />,
+                              label: 'Supabase'
+                            });
+                          } else if (fieldName.includes('vercel')) {
+                            serviceLinks.push({
+                              url,
+                              icon: <Triangle className="w-3 h-3" />,
+                              label: 'Vercel'
+                            });
+                          }
+                        }
+                      });
+                      
+                      return serviceLinks.length > 0 ? (
+                        <div className="flex items-center space-x-1">
+                          {serviceLinks.map((link, index) => (
+                            <a
+                              key={index}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center p-1 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                              title={`Open ${link.label}`}
+                            >
+                              {link.icon}
+                            </a>
+                          ))}
+                        </div>
                       ) : (
                         <span className="text-gray-400">-</span>
                       );
