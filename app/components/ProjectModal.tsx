@@ -115,7 +115,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex-1">
@@ -123,10 +123,10 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
               <input
                 value={editedProject.name}
                 onChange={(e) => setEditedProject({ ...editedProject, name: e.target.value })}
-                className="text-2xl font-bold text-gray-900 dark:text-white bg-transparent border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 w-full"
+                className="text-2xl font-medium text-gray-900 dark:text-white bg-transparent border-b border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 w-full tracking-tight"
               />
             ) : (
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{project.name}</h2>
+              <h2 className="text-2xl font-medium text-gray-900 dark:text-white tracking-tight">{project.name}</h2>
             )}
           </div>
           
@@ -177,12 +177,12 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Current Status */}
             <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center tracking-tight">
                 <Tag className="w-4 h-4 mr-2" />
                 Status
               </h3>
               {project.current_status ? (
-                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                <div className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${
                   project.current_status.color === 'green' ? 'bg-success-50 dark:bg-success-900 text-success-700 dark:text-success-300' :
                   project.current_status.color === 'yellow' ? 'bg-warning-50 dark:bg-warning-900 text-warning-700 dark:text-warning-300' :
                   'bg-danger-50 dark:bg-danger-900 text-danger-700 dark:text-danger-300'
@@ -200,7 +200,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
 
             {/* Progress */}
             <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Progress</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-3 tracking-tight">Progress</h3>
               {project.progress ? (
                 <div>
                   <div className="flex items-center justify-between text-sm mb-2">
@@ -224,7 +224,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
 
             {/* Due Date */}
             <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center tracking-tight">
                 <Calendar className="w-4 h-4 mr-2" />
                 Due Date
               </h3>
@@ -256,13 +256,13 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
           {/* Team Members */}
           {project.members.length > 0 && (
             <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-4 flex items-center tracking-tight">
                 <Users className="w-4 h-4 mr-2" />
                 Team Members
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {project.members.map((member) => (
-                  <div key={member.gid} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div key={member.gid} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded">
                     <img
                       src={member.photo?.image_128x128 || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=40`}
                       alt={member.name}
@@ -338,7 +338,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                       <div className="flex items-center">
                         {field.display_value ? (
                           ['Project Type', 'Department', 'TI Priority', 'T&I Priority'].includes(field.name) ? (
-                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            <span className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${
                               field.name === 'Project Type' 
                                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                                 : field.name === 'Department' 

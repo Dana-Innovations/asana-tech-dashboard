@@ -41,7 +41,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       return null;
     }
 
-    const baseClasses = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium';
+    const baseClasses = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium';
     
     switch (statusColor) {
       case 'green':
@@ -255,7 +255,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
-              <h4 className="font-semibold text-gray-900 dark:text-white truncate">{project.name}</h4>
+              <h4 className="font-medium text-gray-900 dark:text-white truncate tracking-tight">{project.name}</h4>
               {getPriorityIcon()}
             </div>
           </div>
@@ -283,22 +283,22 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       {/* Custom Field Badges */}
       <div className="flex flex-wrap gap-2 mb-3">
         {projectType && (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
+          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
             {projectType}
           </span>
         )}
         {department && (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
+          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
             {department}
           </span>
         )}
         {tiStage && (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
+          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
             {tiStage}
           </span>
         )}
         {tiPriority && (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-50 dark:bg-orange-900 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700">
+          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-50 dark:bg-orange-900 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700">
             P{tiPriority}
           </span>
         )}

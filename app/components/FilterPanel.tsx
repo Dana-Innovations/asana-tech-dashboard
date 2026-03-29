@@ -153,7 +153,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={value}
               onClick={() => onToggle(value)}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                 isSelected
                   ? colorClass || 'bg-sonance-gold text-sonance-charcoal'
                   : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
@@ -179,7 +179,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={option.value}
               onClick={() => toggleArrayFilter('status', option.value)}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                 isSelected
                   ? option.colorClass
                   : option.value === 'green' ? 'bg-success-50 text-success-600 hover:bg-success-100' :
@@ -207,7 +207,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={assignee.gid}
               onClick={() => toggleArrayFilter('assignee', assignee.gid)}
-              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                 isSelected
                   ? 'bg-purple-500 text-white'
                   : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
@@ -234,14 +234,14 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                 placeholder="Search projects..."
                 value={filters.search || ''}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-sonance-slate/30 dark:border-sonance-slate/50 rounded bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors"
               />
             </div>
 
             {/* Filters Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded transition-colors ${
                 showFilters
                   ? 'bg-sonance-gold text-sonance-charcoal'
                   : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
@@ -260,14 +260,14 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <div className="relative">
               <button
                 onClick={() => setShowPresets(!showPresets)}
-                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-lg bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 transition-colors"
+                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 transition-colors"
               >
                 <Settings className="w-4 h-4" />
                 <span>Presets</span>
               </button>
 
               {showPresets && (
-                <div className="absolute top-full left-0 mt-2 w-64 bg-sonance-white dark:bg-sonance-charcoal border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg shadow-lg z-50">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-sonance-white dark:bg-sonance-charcoal border border-sonance-slate/30 dark:border-sonance-slate/50 rounded shadow-lg z-50">
                   <div className="p-3">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-medium text-sonance-dark dark:text-sonance-silver">Filter Presets</span>
@@ -389,19 +389,19 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
                   <span>Save as Preset</span>
                 </button>
                 {showSaveInFilters && (
-                  <div className="mt-3 p-3 border border-sonance-slate/20 dark:border-sonance-slate/40 rounded-lg bg-sonance-white dark:bg-sonance-charcoal">
+                  <div className="mt-3 p-3 border border-sonance-slate/20 dark:border-sonance-slate/40 rounded bg-sonance-white dark:bg-sonance-charcoal">
                     <input
                       type="text"
                       placeholder="Enter preset name..."
                       value={newPresetName}
                       onChange={(e) => setNewPresetName(e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-sonance-slate/30 dark:border-sonance-slate/50 rounded-lg bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors mb-3"
+                      className="w-full px-3 py-2 text-sm border border-sonance-slate/30 dark:border-sonance-slate/50 rounded bg-sonance-white dark:bg-sonance-slate text-sonance-dark dark:text-sonance-silver placeholder-sonance-mist focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold transition-colors mb-3"
                       onKeyPress={(e) => e.key === 'Enter' && savePreset()}
                     />
                     <div className="flex space-x-2">
                       <button
                         onClick={savePreset}
-                        className="px-3 py-2 text-sm bg-sonance-gold text-sonance-charcoal rounded-lg font-medium hover:bg-sonance-gold/90 transition-colors"
+                        className="px-3 py-2 text-sm bg-sonance-gold text-sonance-charcoal rounded font-medium hover:bg-sonance-gold/90 transition-colors"
                         disabled={!newPresetName.trim()}
                       >
                         Save Preset
@@ -427,7 +427,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
         {hasActiveFilters() && (
           <div className="mt-4 flex flex-wrap gap-2">
             {filters.search && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              <span className="inline-flex items-center px-3 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700">
                 Search: {filters.search}
                 <button
                   onClick={() => handleSearchChange('')}
@@ -439,7 +439,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             )}
             
             {filters.status?.map(status => (
-              <span key={status} className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              <span key={status} className={`inline-flex items-center px-3 py-1 rounded text-xs font-medium ${
                 status === 'green' ? 'bg-success-50 text-success-700' :
                 status === 'yellow' ? 'bg-warning-50 text-warning-700' :
                 'bg-danger-50 text-danger-700'
@@ -455,7 +455,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             ))}
 
             {filters.assignee?.map(assigneeId => (
-              <span key={assigneeId} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
+              <span key={assigneeId} className="inline-flex items-center px-3 py-1 rounded text-xs font-medium bg-purple-50 text-purple-700">
                 {uniqueAssignees.find(a => a.gid === assigneeId)?.name}
                 <button
                   onClick={() => toggleArrayFilter('assignee', assigneeId)}
@@ -467,7 +467,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             ))}
 
             {filters.projectType?.map(type => (
-              <span key={type} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              <span key={type} className="inline-flex items-center px-3 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700">
                 {type}
                 <button
                   onClick={() => toggleArrayFilter('projectType', type)}
@@ -479,7 +479,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             ))}
 
             {filters.department?.map(dept => (
-              <span key={dept} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">
+              <span key={dept} className="inline-flex items-center px-3 py-1 rounded text-xs font-medium bg-green-50 text-green-700">
                 {dept}
                 <button
                   onClick={() => toggleArrayFilter('department', dept)}
@@ -491,7 +491,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             ))}
 
             {filters.tiPriority?.map(priority => (
-              <span key={priority} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700">
+              <span key={priority} className="inline-flex items-center px-3 py-1 rounded text-xs font-medium bg-red-50 text-red-700">
                 Priority {priority}
                 <button
                   onClick={() => toggleArrayFilter('tiPriority', priority)}

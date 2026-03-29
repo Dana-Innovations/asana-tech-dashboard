@@ -74,13 +74,13 @@ export function FeedbackButton() {
       {/* Feedback Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
             {!submitted ? (
               <>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white tracking-tight">
                       Submit Feedback
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -106,7 +106,7 @@ export function FeedbackButton() {
                       <button
                         type="button"
                         onClick={() => setType('bug')}
-                        className={`flex flex-col items-center p-3 rounded-lg border text-sm font-medium transition-all ${
+                        className={`flex flex-col items-center p-3 rounded border text-sm font-medium transition-all ${
                           type === 'bug'
                             ? 'border-red-500 bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300'
                             : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-red-300'
@@ -118,7 +118,7 @@ export function FeedbackButton() {
                       <button
                         type="button"
                         onClick={() => setType('feature')}
-                        className={`flex flex-col items-center p-3 rounded-lg border text-sm font-medium transition-all ${
+                        className={`flex flex-col items-center p-3 rounded border text-sm font-medium transition-all ${
                           type === 'feature'
                             ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                             : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-blue-300'
@@ -130,7 +130,7 @@ export function FeedbackButton() {
                       <button
                         type="button"
                         onClick={() => setType('general')}
-                        className={`flex flex-col items-center p-3 rounded-lg border text-sm font-medium transition-all ${
+                        className={`flex flex-col items-center p-3 rounded border text-sm font-medium transition-all ${
                           type === 'general'
                             ? 'border-green-500 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300'
                             : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-green-300'

@@ -49,7 +49,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
           <div className="flex items-center space-x-3">
             <Github className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-medium text-gray-900 dark:text-white tracking-tight">
                 Release Notes
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -72,7 +72,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
               <div key={entry.version} className={index > 0 ? 'mt-8' : ''}>
                 {/* Version Header */}
                 <div className="flex items-center space-x-3 mb-4">
-                  <div className="bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 px-3 py-1 rounded-full text-sm font-mono font-bold">
+                  <div className="bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 px-3 py-1 rounded text-sm font-mono font-medium">
                     v{entry.version}
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
