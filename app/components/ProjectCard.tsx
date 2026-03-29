@@ -125,7 +125,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   if (compact) {
     return (
       <div 
-        className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border border-sonance-slate/20 dark:border-sonance-slate/40 p-3 hover:shadow-lg hover:border-sonance-gold/50 transition-all duration-200 cursor-pointer"
+        className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border-2 border-sonance-slate/20 dark:border-sonance-slate/60 p-3 hover:shadow-lg hover:border-sonance-gold/50 dark:hover:border-sonance-gold/70 transition-all duration-200 cursor-pointer shadow-sm dark:shadow-lg"
         onClick={onClick}
       >
         <div className="flex items-center justify-between">
@@ -189,7 +189,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   return (
     <div 
-      className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border border-sonance-slate/20 dark:border-sonance-slate/40 p-4 hover:shadow-lg hover:border-sonance-gold/50 transition-all duration-200 cursor-pointer"
+      className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border-2 border-sonance-slate/20 dark:border-sonance-slate/60 p-4 hover:shadow-lg hover:border-sonance-gold/50 dark:hover:border-sonance-gold/70 transition-all duration-200 cursor-pointer shadow-sm dark:shadow-lg"
       onClick={onClick}
     >
       {/* Header */}
@@ -323,7 +323,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+          className="inline-flex items-center px-3 py-1 border border-sonance-gold/50 text-xs font-medium rounded-md text-sonance-gold hover:bg-sonance-gold hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sonance-gold focus:ring-offset-2"
         >
           {showDetails ? 'Less' : 'More'} Details
         </button>

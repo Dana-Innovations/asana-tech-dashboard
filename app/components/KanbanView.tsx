@@ -209,8 +209,8 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
       ref={drop as any}
       className={`min-h-[calc(100vh-200px)] flex-1 min-w-[280px] rounded-xl transition-colors ${
         column.color
-      } ${isOver ? 'ring-2 ring-sonance-gold bg-sonance-gold/5 dark:bg-sonance-gold/10' : 'ring-1 ring-sonance-slate/20 dark:ring-sonance-slate/30'} 
-      shadow-sm hover:shadow-lg transition-all duration-200`}
+      } ${isOver ? 'border-2 border-sonance-gold bg-sonance-gold/5 dark:bg-sonance-gold/10' : 'border border-sonance-slate/30 dark:border-sonance-slate/50'} 
+      shadow-md hover:shadow-lg hover:border-sonance-gold/40 dark:hover:border-sonance-gold/60 transition-all duration-200`}
     >
       {/* Column Header */}
       <div className="p-4 border-b border-sonance-slate/20 dark:border-sonance-slate/40">

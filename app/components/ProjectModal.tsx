@@ -223,7 +223,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
             <div className="text-sm text-gray-500 dark:text-gray-400">
               Last updated: {new Date(project.modified_at).toLocaleDateString()}
             </div>
-            <button className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 dark:text-primary-400 text-sm font-medium">
+            <button className="inline-flex items-center space-x-2 px-4 py-2 border border-sonance-gold/50 text-sm font-medium rounded-md text-sonance-gold hover:bg-sonance-gold hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sonance-gold focus:ring-offset-2">
               <ExternalLink className="w-4 h-4" />
               <span>Open in Asana</span>
             </button>

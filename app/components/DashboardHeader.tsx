@@ -33,7 +33,7 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40 shadow-sm">
+    <header className="sticky top-0 z-40 bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40 shadow-sm backdrop-blur-sm">
       <div className="w-full px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Title */}
