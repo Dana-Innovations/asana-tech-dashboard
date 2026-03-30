@@ -255,8 +255,8 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           </div>
         </div>
         
-        {/* Status Badge - moved below title */}
-        <div className="mt-2 flex items-center gap-2">
+        {/* Status Badge + Priority + Department */}
+        <div className="mt-2 flex items-center gap-2 flex-wrap">
           {(() => {
             const statusBadgeClass = getStatusBadge();
             return statusBadgeClass && (
@@ -266,6 +266,11 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
             );
           })()}
           {getPriorityBadge()}
+          {department && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300">
+              {department}
+            </span>
+          )}
         </div>
         
       </div>
@@ -326,21 +331,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         </div>
       )}
 
-      {/* Custom Fields */}
-      {project.custom_fields && project.custom_fields.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <div className="flex flex-wrap gap-2">
-            {project.custom_fields.slice(0, 3).map((field) => (
-              <div key={field.gid} className="flex items-center space-x-1">
-                <span className="text-xs text-gray-500">{field.name}:</span>
-                <span className="text-xs font-medium text-gray-700">
-                  {field.display_value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {/* Footer */}
       <div className="flex items-center mt-3 pt-3 border-t border-gray-100">

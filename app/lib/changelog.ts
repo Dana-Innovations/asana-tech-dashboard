@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.13.2',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Removed raw link text from cards — icon buttons are sufficient' },
+      { type: 'improvement', description: 'Restored Department badge on project cards (next to status and priority)' },
+      { type: 'improvement', description: 'Removed redundant custom fields listing from card footer' },
+    ]
+  },
+  {
     version: '1.13.1',
     date: '2026-03-29',
     changes: [
