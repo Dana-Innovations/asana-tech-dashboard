@@ -181,7 +181,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   if (compact) {
     return (
       <div 
-        className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border-2 border-sonance-slate/20 dark:border-sonance-slate/60 p-3 hover:shadow-lg hover:border-sonance-gold/50 dark:hover:border-sonance-gold/70 transition-all duration-200 cursor-pointer shadow-sm dark:shadow-lg"
+        className="bg-white dark:bg-sonance-charcoal rounded-lg border border-gray-200 dark:border-sonance-slate/60 p-3 hover:shadow-xl hover:border-sonance-beam/40 dark:hover:border-sonance-beam/60 transition-all duration-200 cursor-pointer shadow-md dark:shadow-lg hover:-translate-y-0.5"
         onClick={onClick}
       >
         <div className="flex items-center justify-between">
@@ -247,7 +247,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   return (
     <div 
-      className="bg-sonance-white dark:bg-sonance-charcoal rounded-lg border-2 border-sonance-slate/20 dark:border-sonance-slate/60 p-4 hover:shadow-lg hover:border-sonance-gold/50 dark:hover:border-sonance-gold/70 transition-all duration-200 cursor-pointer shadow-sm dark:shadow-lg"
+      className="bg-white dark:bg-sonance-charcoal rounded-lg border border-gray-200 dark:border-sonance-slate/60 p-4 hover:shadow-xl hover:border-sonance-beam/40 dark:hover:border-sonance-beam/60 transition-all duration-200 cursor-pointer shadow-md dark:shadow-lg hover:-translate-y-0.5"
       onClick={onClick}
     >
       {/* Header */}

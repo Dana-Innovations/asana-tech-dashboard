@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={montserrat.className}>
         <ThemeProvider>
-          <div className="min-h-screen bg-sonance-white dark:bg-sonance-dark">
+          <div className="min-h-screen bg-gray-50 dark:bg-sonance-dark">
             {children}
           </div>
         </ThemeProvider>

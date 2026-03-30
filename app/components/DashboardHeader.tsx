@@ -1,21 +1,24 @@
 import { useState } from 'react';
-import { ViewMode } from '../types/asana';
+import { ViewMode, AsanaProject } from '../types/asana';
 import { Grid, List, Calendar, Users, TrendingUp } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { VersionBadge } from './VersionBadge';
+import { getProjectStage } from '../lib/asana';
 
 interface DashboardHeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   lastSync: Date | null;
   projectCount: number;
+  projects: AsanaProject[];
 }
 
 export function DashboardHeader({
   viewMode,
   onViewModeChange,
   lastSync,
-  projectCount
+  projectCount,
+  projects
 }: DashboardHeaderProps) {
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never';
@@ -32,44 +35,82 @@ export function DashboardHeader({
     return date.toLocaleDateString();
   };
 
+  // Calculate summary statistics
+  const getProjectStats = () => {
+    const stats = {
+      total: projects.length,
+      development: 0,
+      testing: 0,
+      completed: 0,
+      backlog: 0,
+      definition: 0
+    };
+
+    projects.forEach(project => {
+      const stage = getProjectStage(project);
+      switch (stage) {
+        case 'development':
+          stats.development++;
+          break;
+        case 'testing':
+          stats.testing++;
+          break;
+        case 'completion':
+          stats.completed++;
+          break;
+        case 'backlog':
+          stats.backlog++;
+          break;
+        case 'definition':
+          stats.definition++;
+          break;
+      }
+    });
+
+    return stats;
+  };
+
+  const stats = getProjectStats();
+
   return (
-    <header className="sticky top-0 z-40 bg-sonance-white dark:bg-sonance-charcoal border-b border-sonance-slate/20 dark:border-sonance-slate/40 shadow-sm backdrop-blur-sm">
-      <div className="w-full px-4 py-3">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-sonance-charcoal shadow-lg">
+      <div className="w-full px-6 py-6">
+        {/* Main Header Row */}
+        <div className="flex items-center justify-between mb-6">
           {/* Title */}
           <div>
-            <h1 className="text-xl font-medium text-sonance-dark dark:text-sonance-silver tracking-tight">
+            <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
               Technology & Innovation PLM
             </h1>
-            <p className="text-xs text-sonance-mist">
-              {projectCount} projects • {formatLastSync(lastSync)}
+            <p className="text-sm text-sonance-mist mt-1">
+              Last sync: {formatLastSync(lastSync)}
             </p>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-sonance-slate/10 dark:bg-sonance-slate/20 rounded p-1">
+            <div className="flex items-center bg-sonance-slate/30 rounded-lg p-1">
               <button
                 onClick={() => onViewModeChange('kanban')}
-                className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   viewMode === 'kanban'
-                    ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400'
+                    ? 'bg-sonance-beam text-white shadow-sm'
+                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
                 }`}
               >
-                <Grid className="w-3 h-3" />
+                <Grid className="w-4 h-4" />
                 <span>Kanban</span>
               </button>
               <button
                 onClick={() => onViewModeChange('stoplight')}
-                className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   viewMode === 'stoplight'
-                    ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400'
+                    ? 'bg-sonance-beam text-white shadow-sm'
+                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
                 }`}
               >
-                <List className="w-3 h-3" />
+                <List className="w-4 h-4" />
                 <span>Stoplight</span>
               </button>
             </div>
@@ -82,7 +123,29 @@ export function DashboardHeader({
           </div>
         </div>
 
-
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
+            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Total Projects</div>
+            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.total}</div>
+          </div>
+          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
+            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Backlog</div>
+            <div className="text-2xl font-bold text-sonance-white mt-1">{stats.backlog}</div>
+          </div>
+          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
+            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">In Development</div>
+            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.development}</div>
+          </div>
+          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
+            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Testing</div>
+            <div className="text-2xl font-bold text-sonance-white mt-1">{stats.testing}</div>
+          </div>
+          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
+            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Completed</div>
+            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.completed}</div>
+          </div>
+        </div>
       </div>
     </header>
   );

@@ -176,12 +176,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-sonance-white dark:bg-sonance-dark">
+    <div className="min-h-screen bg-gray-50 dark:bg-sonance-dark">
       <DashboardHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         lastSync={lastSync}
         projectCount={projects.length}
+        projects={projects}
       />
 
       {error && (
@@ -196,7 +197,7 @@ export default function Dashboard() {
         projects={projects}
       />
 
-      <main className="w-full px-4 py-6">
+      <main className="w-full px-6 py-8">
         {viewMode === 'kanban' ? (
           <KanbanView 
             projects={filteredProjects} 

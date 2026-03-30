@@ -66,6 +66,7 @@ module.exports = {
           silver: '#d1d5db',    // Primary text
           white: '#f8fafc',     // Pure white accents
           gold: '#c9a84c',      // Subtle accent color
+          beam: '#2563eb',      // "The Beam" - primary blue accent
         }
       }
     },

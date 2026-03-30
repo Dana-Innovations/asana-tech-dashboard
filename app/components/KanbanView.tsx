@@ -23,49 +23,49 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
         id: 'backlog',
         title: 'Backlog',
         projects: projects.filter(p => getProjectStage(p) === 'backlog'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'definition',
         title: 'Definition',
         projects: projects.filter(p => getProjectStage(p) === 'definition'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'development',
         title: 'Development',
         projects: projects.filter(p => getProjectStage(p) === 'development'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'testing',
         title: 'Testing (Alpha)',
         projects: projects.filter(p => getProjectStage(p) === 'testing'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'pilot',
         title: 'Pilot (Beta)',
         projects: projects.filter(p => getProjectStage(p) === 'pilot'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'deployment',
         title: 'Deployment',
         projects: projects.filter(p => getProjectStage(p) === 'deployment'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'completion',
         title: 'Completion / Sustainment',
         projects: projects.filter(p => getProjectStage(p) === 'completion'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       },
       {
         id: 'eol',
         title: 'End of Life',
         projects: projects.filter(p => getProjectStage(p) === 'eol'),
-        color: 'bg-sonance-white dark:bg-sonance-charcoal'
+        color: 'bg-white dark:bg-sonance-charcoal'
       }
     ];
   });
@@ -148,8 +148,8 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="overflow-x-auto pb-6">
-        <div className="flex gap-3 min-h-[calc(100vh-180px)] px-2">
+      <div className="overflow-x-auto pb-8">
+        <div className="flex gap-6 min-h-[calc(100vh-280px)] px-6">
         {columns.map(column => (
           <KanbanColumn
             key={column.id}
@@ -207,27 +207,30 @@ function KanbanColumn({ column, onMoveProject, onProjectClick }: KanbanColumnPro
   return (
     <div
       ref={drop as any}
-      className={`min-h-[calc(100vh-200px)] flex-1 min-w-[340px] rounded-xl transition-colors ${
+      className={`min-h-[calc(100vh-300px)] flex-1 min-w-[360px] rounded-xl transition-colors ${
         column.color
-      } ${isOver ? 'border-2 border-sonance-gold bg-sonance-gold/5 dark:bg-sonance-gold/10' : 'border border-sonance-slate/30 dark:border-sonance-slate/50'} 
-      shadow-md hover:shadow-lg hover:border-sonance-gold/40 dark:hover:border-sonance-gold/60 transition-all duration-200`}
+      } ${isOver ? 'border-2 border-sonance-beam bg-sonance-beam/5 dark:bg-sonance-beam/10' : 'border border-gray-200 dark:border-sonance-slate/50'} 
+      shadow-lg hover:shadow-xl hover:border-sonance-beam/40 dark:hover:border-sonance-beam/60 transition-all duration-200`}
     >
       {/* Column Header */}
-      <div className="p-4 border-b border-sonance-slate/20 dark:border-sonance-slate/40">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <h3 className="font-semibold text-sonance-dark dark:text-sonance-silver tracking-tight">{column.title}</h3>
+      <div className="relative">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-sonance-beam rounded-t-xl"></div>
+        <div className="bg-gray-50 dark:bg-sonance-slate/30 p-5 border-b border-gray-200 dark:border-sonance-slate/40 rounded-t-xl pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <h3 className="font-semibold text-gray-900 dark:text-sonance-silver tracking-tight">{column.title}</h3>
+            </div>
+            <span className="text-sm font-medium text-sonance-beam bg-sonance-beam/10 border border-sonance-beam/20 px-3 py-1 rounded-full">
+              {column.projects.length}
+            </span>
           </div>
-          <span className="text-sm font-medium text-sonance-mist bg-sonance-slate/10 dark:bg-sonance-slate/20 px-3 py-1 rounded-full">
-            {column.projects.length}
-          </span>
         </div>
       </div>
 
       {/* Projects */}
-      <div className="p-4 space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto pb-8">
+      <div className="p-5 space-y-4 max-h-[calc(100vh-340px)] overflow-y-auto pb-8">
         {column.projects.length === 0 ? (
-          <div className="text-center py-8 text-sonance-mist">
+          <div className="text-center py-12 text-gray-500 dark:text-sonance-mist">
             <p className="text-sm font-medium">No Projects</p>
           </div>
         ) : (
