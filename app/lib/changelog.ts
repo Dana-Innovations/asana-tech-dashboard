@@ -9,6 +9,14 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.13.1',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Decluttered project cards — removed redundant type/department/stage badges and status subtitle' },
+      { type: 'improvement', description: 'Removed project count stats from header — slimmer nav bar for more screen space' },
+    ]
+  },
+  {
     version: '1.13.0',
     date: '2026-03-29',
     changes: [

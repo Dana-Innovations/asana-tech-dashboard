@@ -268,30 +268,6 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
           {getPriorityBadge()}
         </div>
         
-        {project.current_status?.title && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
-            {project.current_status.title}
-          </p>
-        )}
-      </div>
-
-      {/* Custom Field Badges */}
-      <div className="flex flex-wrap gap-2 mb-3">
-        {projectType && (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
-            {projectType}
-          </span>
-        )}
-        {department && (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
-            {department}
-          </span>
-        )}
-        {tiStage && (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
-            {tiStage}
-          </span>
-        )}
       </div>
 
       {/* Service Links */}

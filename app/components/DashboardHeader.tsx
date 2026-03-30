@@ -74,9 +74,9 @@ export function DashboardHeader({
 
   return (
     <header className="sticky top-0 z-40 bg-slate-700 dark:bg-sonance-charcoal shadow-lg">
-      <div className="w-full px-6 py-6">
+      <div className="w-full px-6 py-3">
         {/* Main Header Row */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between">
           {/* Title */}
           <div>
             <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
@@ -123,29 +123,7 @@ export function DashboardHeader({
           </div>
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
-            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Total Projects</div>
-            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.total}</div>
-          </div>
-          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
-            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Backlog</div>
-            <div className="text-2xl font-bold text-sonance-white mt-1">{stats.backlog}</div>
-          </div>
-          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
-            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">In Development</div>
-            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.development}</div>
-          </div>
-          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
-            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Testing</div>
-            <div className="text-2xl font-bold text-sonance-white mt-1">{stats.testing}</div>
-          </div>
-          <div className="bg-sonance-slate/20 rounded-lg p-4 border border-sonance-slate/30">
-            <div className="text-sm text-sonance-mist uppercase tracking-wide font-medium">Completed</div>
-            <div className="text-2xl font-bold text-sonance-beam mt-1">{stats.completed}</div>
-          </div>
-        </div>
+
       </div>
     </header>
   );
