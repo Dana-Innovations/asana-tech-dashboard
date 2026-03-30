@@ -9,6 +9,17 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.13.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Bolder project titles (font-semibold) for better card readability' },
+      { type: 'feature', description: 'Hover tooltip on truncated project titles to see the full name' },
+      { type: 'fix', description: 'Status badge colors in project modal now match vivid card colors' },
+      { type: 'improvement', description: 'Filter and Preset button text contrast improved for readability' },
+      { type: 'feature', description: 'Edit status (On Track/At Risk/Off Track) and due date directly in project modal with Asana API sync' },
+    ]
+  },
+  {
     version: '1.12.1',
     date: '2026-03-29',
     changes: [
