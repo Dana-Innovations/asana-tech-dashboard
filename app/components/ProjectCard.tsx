@@ -41,7 +41,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       return null;
     }
 
-    const baseClasses = 'inline-flex items-center px-3 py-1.5 rounded text-sm font-semibold';
+    const baseClasses = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold';
     
     switch (statusColor) {
       case 'green':

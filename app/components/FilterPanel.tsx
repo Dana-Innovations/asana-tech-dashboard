@@ -143,7 +143,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
     onToggle: (value: string) => void;
   }) => (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-sonance-mist">
+      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
         {title}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -153,10 +153,10 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={value}
               onClick={() => onToggle(value)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
                 isSelected
                   ? colorClass || 'bg-sonance-gold text-sonance-charcoal'
-                  : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
+                  : 'bg-gray-200 dark:bg-sonance-slate/50 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-sonance-slate/60'
               }`}
             >
               {value}
@@ -169,7 +169,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
   const StatusBadgeGroup = () => (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-sonance-mist">
+      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
         Status
       </label>
       <div className="flex flex-wrap gap-2">
@@ -179,12 +179,10 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={option.value}
               onClick={() => toggleArrayFilter('status', option.value)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
                 isSelected
                   ? option.colorClass
-                  : option.value === 'green' ? 'bg-success-50 text-success-600 hover:bg-success-100' :
-                    option.value === 'yellow' ? 'bg-warning-50 text-warning-600 hover:bg-warning-100' :
-                    'bg-danger-50 text-danger-600 hover:bg-danger-100'
+                  : 'bg-gray-200 dark:bg-sonance-slate/50 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-sonance-slate/60'
               }`}
             >
               {option.label}
@@ -197,7 +195,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
   const MemberBadgeGroup = () => (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-sonance-mist">
+      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
         Team Members
       </label>
       <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
@@ -207,10 +205,10 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <button
               key={assignee.gid}
               onClick={() => toggleArrayFilter('assignee', assignee.gid)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
                 isSelected
                   ? 'bg-purple-500 text-white'
-                  : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+                  : 'bg-gray-200 dark:bg-sonance-slate/50 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-sonance-slate/60'
               }`}
             >
               {assignee.name}
