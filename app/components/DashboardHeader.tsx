@@ -73,7 +73,7 @@ export function DashboardHeader({
   const stats = getProjectStats();
 
   return (
-    <header className="sticky top-0 z-40 bg-sonance-charcoal shadow-lg">
+    <header className="sticky top-0 z-40 bg-slate-700 dark:bg-sonance-charcoal shadow-lg">
       <div className="w-full px-6 py-6">
         {/* Main Header Row */}
         <div className="flex items-center justify-between mb-6">

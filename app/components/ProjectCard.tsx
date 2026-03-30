@@ -41,17 +41,17 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       return null;
     }
 
-    const baseClasses = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium';
+    const baseClasses = 'inline-flex items-center px-3 py-1.5 rounded text-sm font-semibold';
     
     switch (statusColor) {
       case 'green':
-        return `${baseClasses} bg-success-50 text-success-700 border border-success-200`;
+        return `${baseClasses} bg-emerald-500 text-white`;
       case 'yellow':
-        return `${baseClasses} bg-warning-50 text-warning-700 border border-warning-200`;
+        return `${baseClasses} bg-amber-500 text-white`;
       case 'red':
-        return `${baseClasses} bg-danger-50 text-danger-700 border border-danger-200`;
+        return `${baseClasses} bg-red-500 text-white`;
       default:
-        return `${baseClasses} bg-gray-50 text-gray-700 border border-gray-200`;
+        return `${baseClasses} bg-gray-400 text-white`;
     }
   };
 
