@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AsanaProject } from '../types/asana';
 import { X, Calendar, Users, Tag, FileText, ExternalLink, Save, Github, Database, Triangle, Globe } from 'lucide-react';
-import { formatProgress, updateProjectCustomField } from '../lib/asana';
+import { formatProgress, updateProjectCustomField, updateProjectStatus, updateProjectDueDate } from '../lib/asana';
 
 interface ProjectModalProps {
   project: AsanaProject;
@@ -16,6 +16,12 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
   const [editedProject, setEditedProject] = useState<AsanaProject>(project);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [editedStatus, setEditedStatus] = useState<'on_track' | 'at_risk' | 'off_track' | null>(
+    project.current_status?.color === 'green' ? 'on_track' :
+    project.current_status?.color === 'yellow' ? 'at_risk' :
+    project.current_status?.color === 'red' ? 'off_track' : null
+  );
+  const [editedDueDate, setEditedDueDate] = useState<string>(project.due_date || '');
 
   if (!isOpen) return null;
 
@@ -64,6 +70,20 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Update status if changed
+      const originalStatus = project.current_status?.color === 'green' ? 'on_track' :
+                           project.current_status?.color === 'yellow' ? 'at_risk' :
+                           project.current_status?.color === 'red' ? 'off_track' : null;
+      
+      if (editedStatus !== originalStatus && editedStatus) {
+        await updateProjectStatus(project.gid, editedStatus);
+      }
+
+      // Update due date if changed
+      if (editedDueDate !== (project.due_date || '')) {
+        await updateProjectDueDate(project.gid, editedDueDate || null);
+      }
+
       // Update any changed custom fields
       if (editedProject.custom_fields && project.custom_fields) {
         for (const editedField of editedProject.custom_fields) {
@@ -99,6 +119,12 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
 
   const handleCancel = () => {
     setEditedProject(project);
+    setEditedStatus(
+      project.current_status?.color === 'green' ? 'on_track' :
+      project.current_status?.color === 'yellow' ? 'at_risk' :
+      project.current_status?.color === 'red' ? 'off_track' : null
+    );
+    setEditedDueDate(project.due_date || '');
     setIsEditing(false);
   };
 
@@ -181,20 +207,37 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                 <Tag className="w-4 h-4 mr-2" />
                 Status
               </h3>
-              {project.current_status ? (
-                <div className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${
-                  project.current_status.color === 'green' ? 'bg-success-50 dark:bg-success-900 text-success-700 dark:text-success-300' :
-                  project.current_status.color === 'yellow' ? 'bg-warning-50 dark:bg-warning-900 text-warning-700 dark:text-warning-300' :
-                  'bg-danger-50 dark:bg-danger-900 text-danger-700 dark:text-danger-300'
-                }`}>
-                  {project.current_status.color === 'green' ? 'On Track' :
-                   project.current_status.color === 'yellow' ? 'At Risk' : 'Off Track'}
-                </div>
+              {isEditing ? (
+                <select
+                  value={editedStatus || ''}
+                  onChange={(e) => setEditedStatus(e.target.value as 'on_track' | 'at_risk' | 'off_track' || null)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold"
+                >
+                  <option value="">No Status</option>
+                  <option value="on_track">On Track</option>
+                  <option value="at_risk">At Risk</option>
+                  <option value="off_track">Off Track</option>
+                </select>
               ) : (
-                <span className="text-gray-500 dark:text-gray-400">No status set</span>
-              )}
-              {project.current_status?.title && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{project.current_status.title}</p>
+                <>
+                  {project.current_status ? (
+                    <div className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${
+                      project.current_status.color === 'green' ? 'bg-emerald-500 text-white' :
+                      project.current_status.color === 'yellow' ? 'bg-amber-500 text-white' :
+                      project.current_status.color === 'red' ? 'bg-red-500 text-white' :
+                      'bg-gray-400 text-white'
+                    }`}>
+                      {project.current_status.color === 'green' ? 'On Track' :
+                       project.current_status.color === 'yellow' ? 'At Risk' : 
+                       project.current_status.color === 'red' ? 'Off Track' : 'No Status'}
+                    </div>
+                  ) : (
+                    <span className="text-gray-500 dark:text-gray-400">No status set</span>
+                  )}
+                  {project.current_status?.title && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{project.current_status.title}</p>
+                  )}
+                </>
               )}
             </div>
 
@@ -228,27 +271,38 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                 <Calendar className="w-4 h-4 mr-2" />
                 Due Date
               </h3>
-              {project.due_date ? (
-                <div>
-                  <p className="text-gray-900 dark:text-white">{new Date(project.due_date).toLocaleDateString()}</p>
-                  {(() => {
-                    const dueDate = new Date(project.due_date);
-                    const now = new Date();
-                    const diffTime = dueDate.getTime() - now.getTime();
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    
-                    if (diffDays < 0) {
-                      return <p className="text-red-600 dark:text-red-400 text-sm">{Math.abs(diffDays)} days overdue</p>;
-                    } else if (diffDays === 0) {
-                      return <p className="text-orange-600 dark:text-orange-400 text-sm">Due today</p>;
-                    } else if (diffDays <= 7) {
-                      return <p className="text-yellow-600 dark:text-yellow-400 text-sm">{diffDays} days left</p>;
-                    }
-                    return null;
-                  })()}
-                </div>
+              {isEditing ? (
+                <input
+                  type="date"
+                  value={editedDueDate}
+                  onChange={(e) => setEditedDueDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-sonance-gold focus:border-sonance-gold"
+                />
               ) : (
-                <span className="text-gray-500 dark:text-gray-400">No due date set</span>
+                <>
+                  {project.due_date ? (
+                    <div>
+                      <p className="text-gray-900 dark:text-white">{new Date(project.due_date).toLocaleDateString()}</p>
+                      {(() => {
+                        const dueDate = new Date(project.due_date);
+                        const now = new Date();
+                        const diffTime = dueDate.getTime() - now.getTime();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays < 0) {
+                          return <p className="text-red-600 dark:text-red-400 text-sm">{Math.abs(diffDays)} days overdue</p>;
+                        } else if (diffDays === 0) {
+                          return <p className="text-orange-600 dark:text-orange-400 text-sm">Due today</p>;
+                        } else if (diffDays <= 7) {
+                          return <p className="text-yellow-600 dark:text-yellow-400 text-sm">{diffDays} days left</p>;
+                        }
+                        return null;
+                      })()}
+                    </div>
+                  ) : (
+                    <span className="text-gray-500 dark:text-gray-400">No due date set</span>
+                  )}
+                </>
               )}
             </div>
           </div>

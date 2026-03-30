@@ -244,13 +244,13 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded transition-colors ${
                 showFilters
                   ? 'bg-sonance-gold text-sonance-charcoal'
-                  : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50'
+                  : 'bg-sonance-slate/20 dark:bg-sonance-slate/40 text-gray-800 dark:text-sonance-silver hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 hover:text-sonance-dark dark:hover:text-white'
               }`}
             >
               <Filter className="w-4 h-4" />
               <span>Filters</span>
               {hasActiveFilters() && !showFilters && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs bg-sonance-gold text-sonance-charcoal rounded-full">
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-sonance-gold text-sonance-charcoal rounded-full font-semibold">
                   {(filters.status?.length || 0) + (filters.assignee?.length || 0) + (filters.projectType?.length || 0) + (filters.department?.length || 0) + (filters.tiPriority?.length || 0)}
                 </span>
               )}
@@ -260,7 +260,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
             <div className="relative">
               <button
                 onClick={() => setShowPresets(!showPresets)}
-                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded bg-sonance-slate/20 dark:bg-sonance-slate/40 text-sonance-mist hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 transition-colors"
+                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded bg-sonance-slate/20 dark:bg-sonance-slate/40 text-gray-800 dark:text-sonance-silver hover:bg-sonance-slate/30 dark:hover:bg-sonance-slate/50 hover:text-sonance-dark dark:hover:text-white transition-colors"
               >
                 <Settings className="w-4 h-4" />
                 <span>Presets</span>
@@ -338,7 +338,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
           {hasActiveFilters() && (
             <button
               onClick={clearAllFilters}
-              className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-mist hover:text-sonance-dark dark:hover:text-sonance-silver"
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:text-sonance-dark dark:hover:text-white font-medium transition-colors"
             >
               <X className="w-4 h-4" />
               <span>Clear</span>
@@ -383,7 +383,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => setShowSaveInFilters(!showSaveInFilters)}
-                  className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-gold hover:text-sonance-gold/80"
+                  className="flex items-center space-x-2 px-3 py-2 text-sm text-sonance-gold hover:text-sonance-gold/80 font-medium"
                 >
                   <Save className="w-4 h-4" />
                   <span>Save as Preset</span>

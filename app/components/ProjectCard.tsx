@@ -188,7 +188,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       >
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sonance-dark dark:text-sonance-silver truncate">{project.name}</h4>
+            <h4 className="font-semibold text-sonance-dark dark:text-sonance-silver truncate" title={project.name}>{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
               {(() => {
                 const statusBadgeClass = getStatusBadge();
@@ -251,7 +251,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       <div className="mb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-gray-900 dark:text-white truncate tracking-tight">{project.name}</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-white truncate tracking-tight" title={project.name}>{project.name}</h4>
           </div>
         </div>
         

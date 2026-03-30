@@ -437,11 +437,70 @@ export async function updateProjectCustomField(projectId: string, fieldId: strin
       const errorData = await response.text();
       throw new Error(`Failed to update custom field: ${response.statusText} - ${errorData}`);
     }
-
-    console.log(`Successfully updated project ${projectId} custom field ${fieldId}`);
-    
   } catch (error) {
-    console.error('Error updating custom field:', error);
+    console.error('Error updating project custom field:', error);
+    throw error;
+  }
+}
+
+export async function updateProjectStatus(projectId: string, statusType: 'on_track' | 'at_risk' | 'off_track', statusText: string = 'Status updated via TI Dashboard'): Promise<void> {
+  try {
+    const token = process.env.NEXT_PUBLIC_ASANA_TOKEN;
+    if (!token) {
+      throw new Error('No Asana token available');
+    }
+
+    const response = await fetch(`https://app.asana.com/api/1.0/status_updates`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          parent: projectId,
+          status_type: statusType,
+          text: statusText
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Failed to update project status: ${response.statusText} - ${errorData}`);
+    }
+  } catch (error) {
+    console.error('Error updating project status:', error);
+    throw error;
+  }
+}
+
+export async function updateProjectDueDate(projectId: string, dueDate: string | null): Promise<void> {
+  try {
+    const token = process.env.NEXT_PUBLIC_ASANA_TOKEN;
+    if (!token) {
+      throw new Error('No Asana token available');
+    }
+
+    const response = await fetch(`https://app.asana.com/api/1.0/projects/${projectId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          due_on: dueDate
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Failed to update project due date: ${response.statusText} - ${errorData}`);
+    }
+  } catch (error) {
+    console.error('Error updating project due date:', error);
     throw error;
   }
 }
