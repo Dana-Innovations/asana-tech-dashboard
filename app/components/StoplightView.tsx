@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { AsanaProject, SortField, SortOrder } from '../types/asana';
-import { getStatusColor } from '../lib/asana';
+import { getStatusColor, getProjectPriority, getPriorityBadgeClasses } from '../lib/asana';
 import { 
   ChevronDown, 
   ChevronUp, 
@@ -101,6 +101,20 @@ export function StoplightView({ projects }: StoplightViewProps) {
     return names[0];
   };
 
+  const getPriorityBadge = (project: AsanaProject) => {
+    const priority = getProjectPriority(project);
+    if (!priority) return '-';
+    
+    const badgeClasses = getPriorityBadgeClasses(priority);
+    if (!badgeClasses) return priority;
+    
+    return (
+      <span className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded ${badgeClasses}`}>
+        {priority}
+      </span>
+    );
+  };
+
   const formatRelativeDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -162,6 +176,9 @@ export function StoplightView({ projects }: StoplightViewProps) {
               <th className="px-3 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-32">
                 Stage
               </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-20">
+                Priority
+              </th>
               <th className="px-3 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 w-24">
                 Owner
               </th>
@@ -173,7 +190,7 @@ export function StoplightView({ projects }: StoplightViewProps) {
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {sortedProjects.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center">
+                <td colSpan={8} className="px-6 py-12 text-center">
                   <div className="text-4xl mb-4">📊</div>
                   <p className="text-gray-500 dark:text-gray-400">No projects found</p>
                 </td>
@@ -219,6 +236,11 @@ export function StoplightView({ projects }: StoplightViewProps) {
                     <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
                       {getCustomFieldValue(project, 'T&I Stage')}
                     </span>
+                  </td>
+
+                  {/* Priority */}
+                  <td className="px-3 py-2">
+                    {getPriorityBadge(project)}
                   </td>
 
                   {/* Owner */}

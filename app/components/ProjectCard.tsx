@@ -1,6 +1,6 @@
 
 import { AsanaProject } from '../types/asana';
-import { getStatusColor, formatProgress, getProjectPriority } from '../lib/asana';
+import { getStatusColor, formatProgress, getProjectPriority, getPriorityBadgeClasses } from '../lib/asana';
 import { Calendar, Users, CheckCircle, Clock, AlertTriangle, Target, Github, Database, Triangle, Globe, ExternalLink } from 'lucide-react';
 
 interface ProjectCardProps {
@@ -82,15 +82,17 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
     }
   };
 
-  const getPriorityIcon = () => {
-    switch (priority) {
-      case 'high':
-        return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      case 'medium':
-        return <Clock className="w-4 h-4 text-yellow-500" />;
-      case 'low':
-        return <Target className="w-4 h-4 text-green-500" />;
-    }
+  const getPriorityBadge = () => {
+    if (!priority) return null;
+    
+    const badgeClasses = getPriorityBadgeClasses(priority);
+    if (!badgeClasses) return null;
+    
+    return (
+      <span className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded ${badgeClasses}`}>
+        {priority}
+      </span>
+    );
   };
 
   const getProgressBarColor = () => {
@@ -209,18 +211,13 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
                   {projectType}
                 </span>
               )}
-              {tiPriority && (
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-50 dark:bg-orange-900 text-orange-700 dark:text-orange-300">
-                  P{tiPriority}
-                </span>
-              )}
+              {getPriorityBadge()}
             </div>
             {/* Service Links */}
             {getServiceLinks()}
           </div>
           
           <div className="flex items-center space-x-2">
-            {getPriorityIcon()}
             {project.members.length > 0 && (
               <div className="flex -space-x-1">
                 {project.members.slice(0, 3).map((member, index) => (
@@ -254,24 +251,22 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       <div className="mb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2">
-              <h4 className="font-medium text-gray-900 dark:text-white truncate tracking-tight">{project.name}</h4>
-              {getPriorityIcon()}
-            </div>
+            <h4 className="font-medium text-gray-900 dark:text-white truncate tracking-tight">{project.name}</h4>
           </div>
         </div>
         
         {/* Status Badge - moved below title */}
-        {(() => {
-          const statusBadgeClass = getStatusBadge();
-          return statusBadgeClass && (
-            <div className="mt-2">
+        <div className="mt-2 flex items-center gap-2">
+          {(() => {
+            const statusBadgeClass = getStatusBadge();
+            return statusBadgeClass && (
               <span className={statusBadgeClass}>
                 {getStatusText()}
               </span>
-            </div>
-          );
-        })()}
+            );
+          })()}
+          {getPriorityBadge()}
+        </div>
         
         {project.current_status?.title && (
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
@@ -295,11 +290,6 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         {tiStage && (
           <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
             {tiStage}
-          </span>
-        )}
-        {tiPriority && (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-50 dark:bg-orange-900 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700">
-            P{tiPriority}
           </span>
         )}
       </div>

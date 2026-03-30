@@ -465,15 +465,24 @@ export function formatProgress(project: AsanaProject): string {
   return `${completed_tasks}/${total_tasks} (${percentage}%)`;
 }
 
-export function getProjectPriority(project: AsanaProject): 'high' | 'medium' | 'low' {
-  const dueDate = project.due_date ? new Date(project.due_date) : null;
-  const today = new Date();
-  
-  if (dueDate) {
-    const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
-    if (daysUntilDue <= 7) return 'high';
-    if (daysUntilDue <= 30) return 'medium';
+export function getProjectPriority(project: AsanaProject): string | null {
+  const tiPriorityField = project.custom_fields.find(field => field.name === 'TI Priority');
+  return tiPriorityField?.display_value || null;
+}
+
+export function getPriorityBadgeClasses(priority: string | null): string {
+  switch (priority) {
+    case 'P1':
+      return 'bg-red-600 text-white';
+    case 'P2':
+      return 'bg-orange-500 text-white';
+    case 'P3':
+      return 'bg-amber-400 text-gray-900';
+    case 'P4':
+      return 'bg-blue-400 text-white';
+    case 'P5':
+      return 'bg-gray-400 text-white';
+    default:
+      return '';
   }
-  
-  return 'low';
 }
