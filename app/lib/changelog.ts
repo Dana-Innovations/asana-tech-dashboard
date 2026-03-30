@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.12.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Lighter header in light mode (slate-700) — less heavy, more balanced contrast' },
+      { type: 'improvement', description: 'Vivid status badges — emerald/amber/red with white text for instant visibility' },
+      { type: 'improvement', description: 'Rebuilt Stoplight view as compact dense table — 7 columns, tight rows, 30+ projects visible' },
+    ]
+  },
+  {
     version: '1.11.0',
     date: '2026-03-29',
     changes: [
