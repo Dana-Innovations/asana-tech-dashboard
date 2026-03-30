@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.12.1',
+    date: '2026-03-29',
+    changes: [
+      { type: 'fix', description: 'Priority now reads actual TI Priority field (P1-P5) from Asana instead of calculating from due dates' },
+      { type: 'feature', description: 'Color-coded P1-P5 priority badges on project cards and Stoplight view' },
+      { type: 'improvement', description: 'Removed old priority icons (bullseye/clock/triangle) — replaced with clear P1-P5 labels' },
+    ]
+  },
+  {
     version: '1.12.0',
     date: '2026-03-29',
     changes: [
