@@ -9,6 +9,18 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.11.0',
+    date: '2026-03-29',
+    changes: [
+      { type: 'improvement', description: 'Visual redesign: Light gray page background with elevated floating cards' },
+      { type: 'feature', description: 'Dark charcoal header with live project stats (Total, Backlog, Development, Testing, Completed)' },
+      { type: 'improvement', description: 'Enhanced card elevation with shadow-md, hover lift effects, and white backgrounds' },
+      { type: 'improvement', description: 'Column headers with blue accent stripe and improved visual separation' },
+      { type: 'improvement', description: 'Added Sonance Beam blue accent color for key metrics and interactive elements' },
+      { type: 'improvement', description: 'Generous whitespace and breathing room between all sections' },
+    ]
+  },
+  {
     version: '1.10.0',
     date: '2026-03-29',
     changes: [
