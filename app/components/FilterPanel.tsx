@@ -119,7 +119,7 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
 
   const uniqueTiPriorities = Array.from(new Set(
     projects.map(project => 
-      project.custom_fields.find(field => field.name === 'TI Priority')?.display_value
+      project.custom_fields.find(field => field.name === 'T&I Priority')?.display_value
     ).filter((value): value is string => Boolean(value))
   )).sort();
 

@@ -466,7 +466,7 @@ export function formatProgress(project: AsanaProject): string {
 }
 
 export function getProjectPriority(project: AsanaProject): string | null {
-  const tiPriorityField = project.custom_fields.find(field => field.name === 'TI Priority');
+  const tiPriorityField = project.custom_fields.find(field => field.name === 'T&I Priority');
   return tiPriorityField?.display_value || null;
 }
 

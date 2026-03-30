@@ -337,7 +337,7 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
                       // View mode - show current values with badges
                       <div className="flex items-center">
                         {field.display_value ? (
-                          ['Project Type', 'Department', 'TI Priority', 'T&I Priority'].includes(field.name) ? (
+                          ['Project Type', 'Department', 'T&I Priority'].includes(field.name) ? (
                             <span className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${
                               field.name === 'Project Type' 
                                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'

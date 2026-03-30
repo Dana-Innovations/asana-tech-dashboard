@@ -23,7 +23,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   const projectType = getCustomFieldValue('Project Type');
   const department = getCustomFieldValue('Department');
   const tiStage = getCustomFieldValue('T&I Stage');
-  const tiPriority = getCustomFieldValue('TI Priority');
+  const tiPriority = getCustomFieldValue('T&I Priority');
 
   const getStatusBadge = () => {
     // Only show status badge if there's an actual status update and it's recent

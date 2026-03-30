@@ -159,7 +159,7 @@ export default function Dashboard() {
     // T&I Priority filter - now handles arrays
     if (filters.tiPriority && filters.tiPriority.length > 0) {
       filtered = filtered.filter(project => {
-        const tiPriorityField = project.custom_fields.find(field => field.name === 'TI Priority');
+        const tiPriorityField = project.custom_fields.find(field => field.name === 'T&I Priority');
         return tiPriorityField?.display_value && filters.tiPriority!.includes(tiPriorityField.display_value);
       });
     }
