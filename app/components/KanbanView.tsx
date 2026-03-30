@@ -112,11 +112,9 @@ export function KanbanView({ projects, onProjectUpdate }: KanbanViewProps) {
     // Update project stage in Asana
     try {
       await updateProjectStage(projectId, targetColumnId);
-      
-      // Trigger a refresh of the project data
-      if (onProjectUpdate) {
-        onProjectUpdate();
-      }
+      // Don't trigger onProjectUpdate() here — the optimistic UI update is sufficient.
+      // Refreshing data causes a race condition where getProjectStage() mapping
+      // doesn't round-trip correctly, making the card disappear.
     } catch (error) {
       console.error('Failed to update project stage:', error);
       

@@ -309,6 +309,7 @@ export function getProjectStage(project: AsanaProject): string {
       'Development': 'development',
       'Testing (ALPHA)': 'testing',
       'Testing / Pilot (BETA)': 'pilot',
+      'Deployment': 'deployment',
       'Deploy / Sustain': 'completion',
       'EOL': 'eol'
     };

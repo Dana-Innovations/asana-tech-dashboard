@@ -111,7 +111,7 @@ export function DashboardHeader({
                 }`}
               >
                 <List className="w-4 h-4" />
-                <span>Stoplight</span>
+                <span>List</span>
               </button>
             </div>
 
