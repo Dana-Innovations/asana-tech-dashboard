@@ -3,7 +3,7 @@ export interface AsanaProject {
   name: string;
   completed: boolean;
   current_status?: {
-    color: 'green' | 'yellow' | 'red';
+    color: 'green' | 'yellow' | 'red' | 'blue' | 'purple' | 'gray';
     text: string;
     title: string;
     created_at?: string;
@@ -57,7 +57,7 @@ export interface AsanaTask {
 }
 
 export interface DashboardFilter {
-  status?: ('green' | 'yellow' | 'red')[];
+  status?: ('green' | 'yellow' | 'red' | 'blue' | 'purple' | 'gray')[];
   assignee?: string[];
   search?: string;
   projectType?: string[];

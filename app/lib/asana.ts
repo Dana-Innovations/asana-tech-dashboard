@@ -444,7 +444,7 @@ export async function updateProjectCustomField(projectId: string, fieldId: strin
   }
 }
 
-export async function updateProjectStatus(projectId: string, statusType: 'on_track' | 'at_risk' | 'off_track', statusText: string = 'Status updated via TI Dashboard'): Promise<void> {
+export async function updateProjectStatus(projectId: string, statusType: 'on_track' | 'at_risk' | 'off_track' | 'on_hold' | 'complete' | 'dropped', statusText: string = 'Status updated via TI Dashboard'): Promise<void> {
   try {
     const token = process.env.NEXT_PUBLIC_ASANA_TOKEN;
     if (!token) {
@@ -507,7 +507,7 @@ export async function updateProjectDueDate(projectId: string, dueDate: string | 
 }
 
 // Utility functions
-export function getStatusColor(project: AsanaProject): 'green' | 'yellow' | 'red' {
+export function getStatusColor(project: AsanaProject): 'green' | 'yellow' | 'red' | 'blue' | 'purple' | 'gray' {
   if (project.current_status?.color) {
     return project.current_status.color;
   }

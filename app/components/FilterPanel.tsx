@@ -124,9 +124,12 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
   )).sort();
 
   const statusOptions = [
-    { value: 'green' as const, label: 'On Track', colorClass: 'bg-success-500 hover:bg-success-600 text-white' },
-    { value: 'yellow' as const, label: 'At Risk', colorClass: 'bg-warning-500 hover:bg-warning-600 text-white' },
-    { value: 'red' as const, label: 'Off Track', colorClass: 'bg-danger-500 hover:bg-danger-600 text-white' }
+    { value: 'green' as const, label: 'On Track', colorClass: 'bg-emerald-500 hover:bg-emerald-600 text-white' },
+    { value: 'yellow' as const, label: 'At Risk', colorClass: 'bg-amber-500 hover:bg-amber-600 text-white' },
+    { value: 'red' as const, label: 'Off Track', colorClass: 'bg-red-500 hover:bg-red-600 text-white' },
+    { value: 'blue' as const, label: 'On Hold', colorClass: 'bg-blue-500 hover:bg-blue-600 text-white' },
+    { value: 'purple' as const, label: 'Complete', colorClass: 'bg-purple-500 hover:bg-purple-600 text-white' },
+    { value: 'gray' as const, label: 'Dropped', colorClass: 'bg-gray-500 hover:bg-gray-600 text-white' }
   ];
 
   const BadgeGroup = ({ 

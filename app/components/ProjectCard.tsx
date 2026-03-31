@@ -50,6 +50,12 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         return `${baseClasses} bg-amber-500 text-white`;
       case 'red':
         return `${baseClasses} bg-red-500 text-white`;
+      case 'blue':
+        return `${baseClasses} bg-blue-500 text-white`;
+      case 'purple':
+        return `${baseClasses} bg-purple-500 text-white`;
+      case 'gray':
+        return `${baseClasses} bg-gray-500 text-white`;
       default:
         return `${baseClasses} bg-gray-400 text-white`;
     }
@@ -77,6 +83,12 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         return 'At Risk';
       case 'red':
         return 'Off Track';
+      case 'blue':
+        return 'On Hold';
+      case 'purple':
+        return 'Complete';
+      case 'gray':
+        return 'Dropped';
       default:
         return null;
     }
