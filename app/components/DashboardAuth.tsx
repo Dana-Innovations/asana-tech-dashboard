@@ -24,11 +24,10 @@ export function DashboardAuth({ dashboardName, onAuthSuccess, slug }: DashboardA
       // Check if password is stored in localStorage (remember me functionality)
       const storedAuth = localStorage.getItem(`dashboard-auth-${slug}`);
       
-      // TODO: Replace with actual authentication API call
-      // For now, mock authentication
-      const mockPassword = 'demo123'; // This would come from the database
+      // Interim password protection until Supabase is connected
+      const techProjectsPassword = 'Sonance2024!'; // Temporary password for tech-projects dashboard
       
-      if (password === mockPassword) {
+      if (password === techProjectsPassword) {
         // Store authentication in localStorage for persistence
         const authData = {
           slug,

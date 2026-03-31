@@ -58,7 +58,7 @@ export default function Dashboard() {
           asanaToken: process.env.NEXT_PUBLIC_ASANA_TOKEN || '',
           asanaTeamId: process.env.NEXT_PUBLIC_ASANA_TEAM_ID,
           asanaPortfolioId: process.env.NEXT_PUBLIC_ASANA_PORTFOLIO_ID,
-          isPasswordProtected: false
+          isPasswordProtected: true // ENABLED PASSWORD PROTECTION
         };
         setDashboardConfig(config);
         setIsAuthenticated(true);
