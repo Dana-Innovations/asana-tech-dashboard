@@ -2,6 +2,30 @@
 
 All notable changes to the Asana T&I Dashboard project will be documented in this file.
 
+## [1.15.0] - 2026-03-31
+
+### 🚀 New Features
+- **Expanded Status Options**
+  - Added three new project status types: "On Hold" (blue), "Complete" (purple), and "Dropped" (gray)
+  - Extended status filtering to support all six status options
+  - Updated project cards to display new status badges with appropriate colors
+  - Enhanced Asana API integration to handle new status types
+
+### 🎨 UI/UX Improvements
+- **Status Badge Enhancement**
+  - Blue badges for "On Hold" projects with `bg-blue-500` styling
+  - Purple badges for "Complete" projects with `bg-purple-500` styling  
+  - Gray badges for "Dropped" projects with `bg-gray-500` styling
+  - Consistent white text on all status badges for optimal readability
+
+### 🔧 Technical Improvements
+- **Enhanced Type Safety**
+  - Updated TypeScript interfaces to support new status color options
+  - Extended `DashboardFilter` type for comprehensive status filtering
+  - Improved `updateProjectStatus()` function with new status type support
+
+---
+
 ## [1.8.0] - 2026-03-29
 
 ### 🚀 Major Features Added

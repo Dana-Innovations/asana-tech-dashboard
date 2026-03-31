@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.15.0',
+    date: '2026-03-31',
+    changes: [
+      { type: 'feature', description: 'Added three new project status options: "On Hold" (blue), "Complete" (purple), and "Dropped" (gray)' },
+      { type: 'feature', description: 'Extended status filtering to support all six status options in filter dropdown' },
+      { type: 'improvement', description: 'Updated project cards with new status badge colors and labels for better project visibility' },
+      { type: 'improvement', description: 'Enhanced Asana API integration to handle new status types in updateProjectStatus function' },
+    ]
+  },
+  {
     version: '1.13.2',
     date: '2026-03-29',
     changes: [
