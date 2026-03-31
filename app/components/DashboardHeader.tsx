@@ -11,6 +11,7 @@ interface DashboardHeaderProps {
   lastSync: Date | null;
   projectCount: number;
   projects: AsanaProject[];
+  dashboardName?: string;
 }
 
 export function DashboardHeader({
@@ -18,7 +19,8 @@ export function DashboardHeader({
   onViewModeChange,
   lastSync,
   projectCount,
-  projects
+  projects,
+  dashboardName
 }: DashboardHeaderProps) {
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never';
@@ -80,7 +82,7 @@ export function DashboardHeader({
           {/* Title */}
           <div>
             <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
-              Technology Project Dashboard
+              {dashboardName || 'Asana Dashboard'}
             </h1>
             <p className="text-sm text-sonance-mist mt-1">
               Last sync: {formatLastSync(lastSync)}

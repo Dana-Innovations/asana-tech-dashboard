@@ -7,7 +7,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 export class ProjectStore {
-  async saveProjects(projects: AsanaProject[]) {
+  async saveProjects(projects: AsanaProject[], dashboardId?: string) {
     if (!supabase) {
       console.warn('Supabase not configured - skipping save');
       return;
@@ -18,6 +18,7 @@ export class ProjectStore {
         .upsert(
           projects.map(project => ({
             asana_id: project.gid,
+            dashboard_id: dashboardId || null,
             name: project.name,
             completed: project.completed,
             status_color: project.current_status?.color || null,
@@ -37,7 +38,7 @@ export class ProjectStore {
             updated_at: new Date().toISOString(),
           })),
           { 
-            onConflict: 'asana_id',
+            onConflict: dashboardId ? 'asana_id,dashboard_id' : 'asana_id',
             ignoreDuplicates: false 
           }
         );
@@ -51,16 +52,26 @@ export class ProjectStore {
     }
   }
 
-  async getProjects(): Promise<AsanaProject[]> {
+  async getProjects(dashboardId?: string): Promise<AsanaProject[]> {
     if (!supabase) {
       console.warn('Supabase not configured - returning empty array');
       return [];
     }
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('projects')
         .select('*')
         .order('modified_at', { ascending: false });
+      
+      // Filter by dashboard ID if provided
+      if (dashboardId) {
+        query = query.eq('dashboard_id', dashboardId);
+      } else {
+        // For backward compatibility, include projects with null dashboard_id
+        query = query.is('dashboard_id', null);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -95,15 +106,15 @@ export class ProjectStore {
     }
   }
 
-  async syncProjects(asanaService: any): Promise<AsanaProject[]> {
+  async syncProjects(asanaService: any, dashboardId?: string): Promise<AsanaProject[]> {
     try {
-      console.log('Starting project sync...');
+      console.log(`Starting project sync for dashboard: ${dashboardId || 'default'}...`);
       
       // Fetch latest data from Asana
       const asanaProjects = await asanaService.getProjects();
       
       // Save to database
-      await this.saveProjects(asanaProjects);
+      await this.saveProjects(asanaProjects, dashboardId);
       
       console.log('Project sync completed successfully');
       return asanaProjects;
@@ -112,18 +123,18 @@ export class ProjectStore {
       
       // Fallback to cached data
       console.log('Falling back to cached data...');
-      return await this.getProjects();
+      return await this.getProjects(dashboardId);
     }
   }
 
   // Real-time subscription for project updates
-  subscribeToProjects(callback: (projects: AsanaProject[]) => void) {
+  subscribeToProjects(callback: (projects: AsanaProject[]) => void, dashboardId?: string) {
     if (!supabase) {
       console.warn('Supabase not configured - no real-time updates');
       return { unsubscribe: () => {} };
     }
     const subscription = supabase
-      .channel('projects-changes')
+      .channel(`projects-changes-${dashboardId || 'default'}`)
       .on('postgres_changes', 
         { 
           event: '*', 
@@ -131,7 +142,7 @@ export class ProjectStore {
           table: 'projects' 
         }, 
         async () => {
-          const projects = await this.getProjects();
+          const projects = await this.getProjects(dashboardId);
           callback(projects);
         }
       )
@@ -140,31 +151,43 @@ export class ProjectStore {
     return subscription;
   }
 
-  async getLastSyncTime(): Promise<Date | null> {
+  async getLastSyncTime(dashboardId?: string): Promise<Date | null> {
     if (!supabase) return null;
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('sync_log')
-        .select('last_sync')
-        .order('last_sync', { ascending: false })
-        .limit(1)
-        .single();
+        .select('synced_at')
+        .order('synced_at', { ascending: false })
+        .limit(1);
+      
+      // Filter by dashboard ID if provided
+      if (dashboardId) {
+        query = query.eq('dashboard_id', dashboardId);
+      } else {
+        // For backward compatibility, include entries with null dashboard_id
+        query = query.is('dashboard_id', null);
+      }
+      
+      const { data, error } = await query.single();
 
       if (error && error.code !== 'PGRST116') throw error;
       
-      return data ? new Date(data.last_sync) : null;
+      return data ? new Date(data.synced_at) : null;
     } catch (error) {
       console.error('Error fetching last sync time:', error);
       return null;
     }
   }
 
-  async updateSyncTime() {
+  async updateSyncTime(dashboardId?: string) {
     if (!supabase) return;
     try {
       const { error } = await supabase
         .from('sync_log')
-        .insert({ last_sync: new Date().toISOString() });
+        .insert({ 
+          dashboard_id: dashboardId || null,
+          synced_at: new Date().toISOString() 
+        });
 
       if (error) throw error;
     } catch (error) {

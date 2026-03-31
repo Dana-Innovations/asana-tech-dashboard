@@ -8,8 +8,8 @@ const montserrat = Montserrat({
 })
 
 export const metadata = {
-  title: 'Technology Project Dashboard',
-  description: 'Project management dashboard for the technology team',
+  title: 'Asana Dashboard',
+  description: 'Multi-tenant project management dashboards powered by Asana',
 }
 
 export default function RootLayout({
