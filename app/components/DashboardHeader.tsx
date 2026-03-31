@@ -80,7 +80,7 @@ export function DashboardHeader({
           {/* Title */}
           <div>
             <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
-              Technology & Innovation PLM
+              Technology Project Dashboard
             </h1>
             <p className="text-sm text-sonance-mist mt-1">
               Last sync: {formatLastSync(lastSync)}

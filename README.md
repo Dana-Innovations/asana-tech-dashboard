@@ -1,6 +1,6 @@
-# Asana Technology & Innovation Dashboard
+# Technology Project Dashboard
 
-A comprehensive project management dashboard for the Technology & Innovation team, built with Next.js, Supabase, and Asana API integration.
+A comprehensive project management dashboard for the technology team, built with Next.js, Supabase, and Asana API integration.
 
 ## Features
 
@@ -45,7 +45,7 @@ A comprehensive project management dashboard for the Technology & Innovation tea
 ### 1. Clone and Install
 ```bash
 git clone <repository-url>
-cd asana-tech-dashboard
+cd technology-project-dashboard
 npm install
 ```
 
@@ -77,7 +77,7 @@ NEXT_PUBLIC_ASANA_TEAM_ID=your_team_id
 3. Copy the token to `NEXT_PUBLIC_ASANA_TOKEN`
 
 #### Team ID
-1. Go to your Technology & Innovation team in Asana
+1. Go to your technology team in Asana
 2. Copy team ID from the URL: `https://app.asana.com/0/{TEAM_ID}/list`
 3. Add to `NEXT_PUBLIC_ASANA_TEAM_ID`
 
@@ -105,7 +105,7 @@ npm start
 ## Project Structure
 
 ```
-asana-tech-dashboard/
+technology-project-dashboard/
 ├── app/
 │   ├── components/          # React components
 │   │   ├── DashboardHeader.tsx
@@ -222,8 +222,8 @@ Set `NODE_ENV=development` to enable:
 
 ## License
 
-This project is proprietary software for Sonance Technology & Innovation team.
+This project is proprietary software for Sonance technology team.
 
 ---
 
-Built with ❤️ for the Technology & Innovation team
+Built with ❤️ for the technology team

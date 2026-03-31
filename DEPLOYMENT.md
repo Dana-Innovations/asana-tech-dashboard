@@ -3,7 +3,7 @@
 ## Prerequisites Setup
 - [ ] Supabase project created
 - [ ] Asana Personal Access Token obtained  
-- [ ] Technology & Innovation Team ID identified
+- [ ] Technology Team ID identified
 - [ ] GitHub repository created
 - [ ] Vercel account ready
 
@@ -54,5 +54,5 @@
 
 ---
 
-**Production URL**: `https://asana-tech-dashboard.vercel.app` (replace with actual)
-**Repository**: `https://github.com/derickdahl/asana-tech-dashboard` (replace with actual)
+**Production URL**: `https://technology-project-dashboard.vercel.app` (replace with actual)
+**Repository**: `https://github.com/Dana-Innovations/technology-project-dashboard` (replace with actual)

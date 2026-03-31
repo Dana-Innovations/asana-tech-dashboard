@@ -41,7 +41,7 @@ ${description}
 - Email: ${email || 'Not provided'}
 - Submitted: ${new Date(timestamp).toLocaleString()}
 - URL: ${url}
-- Source: Technology & Innovation Dashboard
+- Source: Technology Project Dashboard
 
 **Next Steps:**
 ${type === 'bug' ? 

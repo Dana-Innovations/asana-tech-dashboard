@@ -84,7 +84,7 @@ export function FeedbackButton() {
                       Submit Feedback
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Help us improve the Technology & Innovation Dashboard
+                      Help us improve the Technology Project Dashboard
                     </p>
                   </div>
                   <button

@@ -53,7 +53,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
                 Release Notes
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Technology & Innovation Dashboard
+                Technology Project Dashboard
               </p>
             </div>
           </div>
