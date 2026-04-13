@@ -9,6 +9,13 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.17.1',
+    date: '2026-04-13',
+    changes: [
+      { type: 'feature', description: 'Back arrow button in dashboard header to navigate back to the portfolio/dashboards home page' },
+    ]
+  },
+  {
     version: '1.17.0',
     date: '2026-04-13',
     changes: [

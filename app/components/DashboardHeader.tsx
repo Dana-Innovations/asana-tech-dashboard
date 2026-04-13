@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ViewMode, AsanaProject } from '../types/asana';
-import { Grid, List, Calendar, Users, TrendingUp, GanttChart } from 'lucide-react';
+import { Grid, List, Calendar, Users, TrendingUp, GanttChart, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 import { VersionBadge } from './VersionBadge';
 import { getProjectStage } from '../lib/asana';
@@ -80,13 +81,18 @@ export function DashboardHeader({
         {/* Main Header Row */}
         <div className="flex items-center justify-between">
           {/* Title */}
-          <div>
-            <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
-              {dashboardName || 'Asana Dashboard'}
-            </h1>
-            <p className="text-sm text-sonance-mist mt-1">
-              Last sync: {formatLastSync(lastSync)}
-            </p>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Back to Dashboards">
+              <ArrowLeft className="w-5 h-5 text-sonance-mist hover:text-white" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-semibold text-sonance-white tracking-tight">
+                {dashboardName || 'Asana Dashboard'}
+              </h1>
+              <p className="text-sm text-sonance-mist mt-1">
+                Last sync: {formatLastSync(lastSync)}
+              </p>
+            </div>
           </div>
 
           {/* Controls */}
