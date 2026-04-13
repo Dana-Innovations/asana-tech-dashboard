@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ViewMode, AsanaProject } from '../types/asana';
-import { Grid, List, Calendar, Users, TrendingUp } from 'lucide-react';
+import { Grid, List, Calendar, Users, TrendingUp, GanttChart } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { VersionBadge } from './VersionBadge';
 import { getProjectStage } from '../lib/asana';
@@ -123,7 +123,7 @@ export function DashboardHeader({
                     : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
                 }`}
               >
-                <span className="w-4 h-4 text-center leading-4">📅</span>
+                <GanttChart className="w-4 h-4" />
                 <span>Roadmap</span>
               </button>
               <button

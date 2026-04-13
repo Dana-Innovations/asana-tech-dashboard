@@ -9,6 +9,21 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.16.0',
+    date: '2026-04-13',
+    changes: [
+      { type: 'feature', description: 'New Roadmap/Gantt timeline view with horizontal bars per project, quarter headers, and Today line' },
+      { type: 'feature', description: 'New List view with sortable table (Project, Type, Dept, Health, Stage, Priority, Owner, Progress, Timeline)' },
+      { type: 'feature', description: 'New Grid view with card layout and grouping by Type, Department, Priority, or Stage' },
+      { type: 'feature', description: 'Five view tabs: Kanban, Stoplight, Roadmap, List, Grid' },
+      { type: 'feature', description: 'Roadmap supports Asana native date ranges (start_on/due_date) with estimated bars for undated projects' },
+      { type: 'improvement', description: 'Full light mode support across all new views' },
+      { type: 'improvement', description: 'Roadmap bars are rich, saturated colors matching production roadmap visualizers' },
+      { type: 'improvement', description: 'Wider project name column (320px) for better readability' },
+      { type: 'fix', description: 'Replaced emoji icon on Roadmap tab with monochrome Gantt chart icon' },
+    ]
+  },
+  {
     version: '1.15.0',
     date: '2026-03-31',
     changes: [

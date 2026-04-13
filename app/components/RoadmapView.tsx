@@ -140,11 +140,11 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
       {/* Gantt Chart */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-900/50">
         <div className="overflow-x-auto" ref={scrollRef}>
-          <div style={{ minWidth: `${totalWidth + 240}px`, position: 'relative' }}>
+          <div style={{ minWidth: `${totalWidth + 320}px`, position: 'relative' }}>
             
             {/* Quarter Headers */}
             <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 sticky top-0 z-10">
-              <div className="w-[240px] shrink-0 px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+              <div className="w-[320px] shrink-0 px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
                 PROJECT
               </div>
               <div className="flex-1 relative" style={{ width: `${totalWidth}px` }}>
@@ -161,7 +161,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
 
             {/* Today line */}
             <div className="absolute top-0 bottom-0 z-20 pointer-events-none"
-              style={{ left: `${240 + (todayPct / 100) * totalWidth}px` }}>
+              style={{ left: `${320 + (todayPct / 100) * totalWidth}px` }}>
               <div className="w-0.5 h-full bg-yellow-500/70" />
               <div className="absolute top-[2px] -translate-x-1/2 text-[0.55rem] font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-500/20 px-1.5 py-0.5 rounded whitespace-nowrap">
                 Today
@@ -186,7 +186,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                   onClick={() => onProjectClick?.(project)}>
                   
                   {/* Project Name */}
-                  <div className="w-[240px] shrink-0 px-4 flex items-center gap-2 border-r border-gray-200/60 dark:border-gray-700/50">
+                  <div className="w-[320px] shrink-0 px-4 flex items-center gap-2 border-r border-gray-200/60 dark:border-gray-700/50">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
                     <span className="text-sm text-gray-800 dark:text-gray-200 truncate leading-tight">{project.name}</span>
                   </div>
@@ -205,8 +205,8 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '30px',
-                          backgroundColor: `${color}${estimated ? '40' : '70'}`,
-                          border: estimated ? `1.5px dashed ${color}80` : `none`,
+                          backgroundColor: `${color}${estimated ? '60' : 'cc'}`,
+                          border: estimated ? `1.5px dashed ${color}aa` : `none`,
                         }}>
                         {/* Progress fill */}
                         {progress > 0 && (
