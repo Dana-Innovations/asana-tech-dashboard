@@ -97,7 +97,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
   const monthWidth = Math.round(baseWidth * (0.4 + (zoomLevel / 100) * 1.2)); // 40% to 160% of base
   const totalMonths = Math.ceil((timelineEnd.getTime() - timelineStart.getTime()) / (30.44 * 86400000));
   const totalWidth = totalMonths * monthWidth;
-  const NAME_COL = 320;
+  const NAME_COL = 360;
 
   const getBarPosition = (p: AsanaProject) => {
     const { start, end, estimated } = getEstimatedDates(p);
@@ -131,19 +131,6 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
               {scale.charAt(0).toUpperCase() + scale.slice(1)}
             </button>
           ))}
-        </div>
-        {/* Zoom slider */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Zoom:</span>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={zoomLevel}
-            onChange={(e) => setZoomLevel(Number(e.target.value))}
-            className="w-32 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500"
-          />
-          <span className="text-xs text-gray-400 w-8">{Math.round(40 + (zoomLevel / 100) * 120)}%</span>
         </div>
         <div className="text-xs text-gray-500">
           {projects.filter(p => p.start_on || p.due_date).length} dated · {projects.filter(p => !p.start_on && !p.due_date).length} est.
@@ -220,14 +207,15 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '28px',
-                          backgroundColor: `${color}30`,
-                          border: estimated ? `1.5px dashed ${color}80` : `none`,
+                          backgroundColor: `${color}20`,
+                          border: estimated ? `1.5px dashed ${color}60` : `1px solid ${color}40`,
                         }}>
-                        {/* Dark progress fill */}
+                        {/* Dark progress fill — solid, high contrast */}
                         <div className="absolute inset-y-0 left-0 rounded-full"
                           style={{ 
-                            width: `${Math.max(progress, estimated ? 0 : 8)}%`, 
-                            backgroundColor: `${color}cc`,
+                            width: `${Math.max(progress, estimated ? 0 : 5)}%`, 
+                            backgroundColor: color,
+                            opacity: 0.85,
                           }} />
                         {/* Progress badge on bar */}
                         {progress > 0 && (
@@ -275,6 +263,22 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Zoom slider — bottom-right corner */}
+        <div className="sticky bottom-0 flex justify-end px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 dark:text-gray-400">−</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={zoomLevel}
+              onChange={(e) => setZoomLevel(Number(e.target.value))}
+              className="w-40 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500"
+            />
+            <span className="text-xs text-gray-500 dark:text-gray-400">+</span>
           </div>
         </div>
       </div>

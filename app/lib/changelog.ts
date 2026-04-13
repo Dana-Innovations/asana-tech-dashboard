@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.18.1',
+    date: '2026-04-13',
+    changes: [
+      { type: 'fix', description: 'Zoom slider moved to bottom-right corner of Roadmap chart (sticky footer with −/+ labels)' },
+      { type: 'fix', description: 'Bar progress fill now uses full-opacity solid color for high contrast dark fill' },
+      { type: 'fix', description: 'Project name column widened to 360px for full readability of long names' },
+    ]
+  },
+  {
     version: '1.18.0',
     date: '2026-04-13',
     changes: [
