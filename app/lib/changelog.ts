@@ -9,6 +9,18 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.19.0',
+    date: '2026-04-13',
+    changes: [
+      { type: 'fix', description: 'Complete filter now shows "Complete" label instead of "Off Track" in filter badge view' },
+      { type: 'fix', description: 'On Hold, Complete, and Dropped statuses all display correct labels in consolidated filter badges' },
+      { type: 'fix', description: 'Auto-refresh now uses dedicated /api/version endpoint (15s polling) for reliable version detection' },
+      { type: 'improvement', description: 'Roadmap bars use full-opacity solid color fill aligned to task completion percentage' },
+      { type: 'improvement', description: 'Zoom slider positioned at bottom-right of Roadmap chart with −/+ labels' },
+      { type: 'improvement', description: 'Project name column at 360px for full name readability' },
+    ]
+  },
+  {
     version: '1.18.1',
     date: '2026-04-13',
     changes: [

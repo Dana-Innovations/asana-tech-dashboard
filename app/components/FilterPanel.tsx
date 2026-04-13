@@ -443,9 +443,12 @@ export function FilterPanel({ filters, onFiltersChange, projects }: FilterPanelP
               <span key={status} className={`inline-flex items-center px-3 py-1 rounded text-xs font-medium ${
                 status === 'green' ? 'bg-success-50 text-success-700' :
                 status === 'yellow' ? 'bg-warning-50 text-warning-700' :
+                status === 'purple' ? 'bg-purple-50 text-purple-700' :
+                status === 'blue' ? 'bg-blue-50 text-blue-700' :
+                status === 'gray' ? 'bg-gray-100 text-gray-700' :
                 'bg-danger-50 text-danger-700'
               }`}>
-                {status === 'green' ? 'On Track' : status === 'yellow' ? 'At Risk' : 'Off Track'}
+                {status === 'green' ? 'On Track' : status === 'yellow' ? 'At Risk' : status === 'red' ? 'Off Track' : status === 'purple' ? 'Complete' : status === 'blue' ? 'On Hold' : status === 'gray' ? 'Dropped' : status}
                 <button
                   onClick={() => toggleArrayFilter('status', status)}
                   className="ml-2 hover:opacity-70"
