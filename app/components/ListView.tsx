@@ -71,13 +71,7 @@ export function ListView({ projects, onProjectClick }: ListViewProps) {
                   <td className="px-3 py-3"><span className={`text-xs font-bold ${getField(p,'priority')==='P1'?'text-red-400':getField(p,'priority')==='P2'?'text-yellow-400':'text-gray-500'}`}>{getField(p, 'priority')}</span></td>
                   <td className="px-3 py-3 text-xs text-gray-400">{getOwner(p)}</td>
                   <td className="px-3 py-3"><div className="flex items-center gap-2"><div className="w-16 h-1.5 rounded-full bg-gray-700 overflow-hidden"><div className="h-full rounded-full" style={{width:`${progress}%`, backgroundColor: color}}/></div><span className="text-xs text-gray-500 w-8">{progress}%</span></div></td>
-                  <td className="px-3 py-3 text-xs text-gray-500 whitespace-nowrap">{(() => {
-                    const sf = p.custom_fields?.find(f => f.name === 'Start Date');
-                    const sv = p.start_on || sf?.display_value;
-                    const dv = p.due_date;
-                    if (!sv && !dv) return '—';
-                    return `${sv ? new Date(sv).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '?'} → ${dv ? new Date(dv).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '?'}`;
-                  })()}</td>
+                  <td className="px-3 py-3 text-xs text-gray-500 whitespace-nowrap">{p.start_on || p.due_date ? `${p.start_on ? new Date(p.start_on).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '?'} → ${p.due_date ? new Date(p.due_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '?'}` : '—'}</td>
                 </tr>
               );
             })}

@@ -30,14 +30,10 @@ function getOwner(p: AsanaProject): string {
 
 // Estimate timeline based on stage if no dates set
 function getEstimatedDates(p: AsanaProject): { start: Date; end: Date; estimated: boolean } {
-  // Check for Start Date custom field (ID: 1214050111560715) or native start_on
-  const startDateField = p.custom_fields?.find(f => f.name === 'Start Date');
-  const startDateValue = p.start_on || (startDateField?.display_value) || null;
-  const dueDateValue = p.due_date || null;
-  
-  if (startDateValue || dueDateValue) {
-    const start = startDateValue ? new Date(startDateValue) : new Date(new Date(dueDateValue!).getTime() - 90 * 86400000);
-    const end = dueDateValue ? new Date(dueDateValue) : new Date(start.getTime() + 90 * 86400000);
+  // Use Asana's native start_on and due_date (set via the "Due date" range column)
+  if (p.start_on || p.due_date) {
+    const start = p.start_on ? new Date(p.start_on) : new Date(new Date(p.due_date!).getTime() - 90 * 86400000);
+    const end = p.due_date ? new Date(p.due_date) : new Date(start.getTime() + 90 * 86400000);
     return { start, end, estimated: false };
   }
 
