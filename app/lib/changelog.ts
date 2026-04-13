@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.18.0',
+    date: '2026-04-13',
+    changes: [
+      { type: 'feature', description: 'Zoom slider on Roadmap view — drag to scale timeline wider or narrower without changing time scale' },
+      { type: 'improvement', description: 'Roadmap bars now show dark progress fill aligned to task completion percentage' },
+      { type: 'improvement', description: 'Full badge set on Roadmap rows: Owner, Type (blue), Stage, Status pill (colored), Priority badge — matching Josh Blanken\'s Roadmap Visualizer design' },
+      { type: 'improvement', description: 'Project name column widened to 320px across all views for full readability' },
+    ]
+  },
+  {
     version: '1.17.1',
     date: '2026-04-13',
     changes: [
