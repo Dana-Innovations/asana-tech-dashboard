@@ -1,6 +1,7 @@
 import './globals.css'
 import { Montserrat } from 'next/font/google'
 import { ThemeProvider } from './components/ThemeProvider'
+import { AutoRefresh } from './components/AutoRefresh'
 
 const montserrat = Montserrat({ 
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="min-h-screen bg-gray-50 dark:bg-sonance-dark">
             {children}
+            <AutoRefresh />
           </div>
         </ThemeProvider>
       </body>

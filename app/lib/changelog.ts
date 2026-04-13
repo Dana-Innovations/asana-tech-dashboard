@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.17.0',
+    date: '2026-04-13',
+    changes: [
+      { type: 'feature', description: 'Auto-refresh: App automatically detects and loads new versions when deployed (no manual refresh needed)' },
+      { type: 'improvement', description: 'Merged Stoplight + List views into a unified List view with badges, progress bars, and timeline columns' },
+      { type: 'improvement', description: 'Wider project name column across all views for full readability' },
+      { type: 'improvement', description: 'List view now uses Stoplight-style Type and Priority badges for better legibility' },
+    ]
+  },
+  {
     version: '1.16.0',
     date: '2026-04-13',
     changes: [

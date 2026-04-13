@@ -312,7 +312,7 @@ export default function Dashboard() {
 
       <main className="w-full px-6 py-8">
         {viewMode === 'kanban' && <KanbanView projects={filteredProjects} onProjectUpdate={loadProjects} />}
-        {viewMode === 'stoplight' && <StoplightView projects={filteredProjects} />}
+        {viewMode === 'stoplight' && <ListView projects={filteredProjects} />}
         {viewMode === 'roadmap' && <RoadmapView projects={filteredProjects} />}
         {viewMode === 'list' && <ListView projects={filteredProjects} />}
         {viewMode === 'grid' && <ProjectsGrid projects={filteredProjects} />}

@@ -104,17 +104,7 @@ export function DashboardHeader({
                 <Grid className="w-4 h-4" />
                 <span>Kanban</span>
               </button>
-              <button
-                onClick={() => onViewModeChange('stoplight')}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'stoplight'
-                    ? 'bg-sonance-beam text-white shadow-sm'
-                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
-                }`}
-              >
-                <List className="w-4 h-4" />
-                <span>Stoplight</span>
-              </button>
+
               <button
                 onClick={() => onViewModeChange('roadmap')}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
