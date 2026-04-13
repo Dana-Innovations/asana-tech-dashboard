@@ -132,6 +132,14 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
             </button>
           ))}
         </div>
+        {/* Zoom slider */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500 dark:text-gray-400">−</span>
+          <input type="range" min="0" max="100" value={zoomLevel}
+            onChange={(e) => setZoomLevel(Number(e.target.value))}
+            className="w-32 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500" />
+          <span className="text-xs text-gray-500 dark:text-gray-400">+</span>
+        </div>
         <div className="text-xs text-gray-500">
           {projects.filter(p => p.start_on || p.due_date).length} dated · {projects.filter(p => !p.start_on && !p.due_date).length} est.
         </div>
@@ -144,7 +152,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
             
             {/* Quarter Headers */}
             <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 sticky top-0 z-10">
-              <div className="shrink-0 px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700" style={{ width: `${NAME_COL}px` }}>
+              <div className="shrink-0 px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700 sticky left-0 z-20 bg-gray-50 dark:bg-gray-800/95" style={{ width: `${NAME_COL}px` }}>
                 PROJECT
               </div>
               <div className="flex-1 relative" style={{ width: `${totalWidth}px` }}>
@@ -188,7 +196,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                   onClick={() => onProjectClick?.(project)}>
                   
                   {/* Project Name */}
-                  <div className="shrink-0 px-4 flex items-center gap-2 border-r border-gray-200/60 dark:border-gray-700/50" style={{ width: `${NAME_COL}px` }}>
+                  <div className="shrink-0 px-4 flex items-center gap-2 border-r border-gray-200/60 dark:border-gray-700/50 sticky left-0 z-10 bg-white dark:bg-gray-900/95" style={{ width: `${NAME_COL}px` }}>
                     <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
                     <span className="text-sm text-gray-800 dark:text-gray-200 leading-tight font-medium" style={{overflow:'hidden', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical'}}>{project.name}</span>
                   </div>
@@ -203,27 +211,27 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
 
                     {/* The Bar + badges */}
                     <div className="absolute" style={{ left: `${leftPct}%`, width: `${widthPct}%`, top: '8px' }}>
-                      {/* Bar with progress fill */}
+                      {/* Bar — always solid colored like Josh's design */}
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '28px',
-                          backgroundColor: `${color}15`,
-                          border: estimated ? `1.5px dashed ${color}50` : `1px solid ${color}30`,
+                          backgroundColor: color,
+                          opacity: estimated ? 0.5 : 0.85,
+                          border: estimated ? `1.5px dashed ${color}` : 'none',
                         }}>
-                        {/* Dark progress fill — fully opaque, high contrast */}
-                        <div className="absolute inset-y-0 left-0 rounded-full"
-                          style={{ 
-                            width: `${Math.max(progress, estimated ? 0 : 3)}%`, 
-                            backgroundColor: color,
-                            opacity: 1,
-                          }} />
-                        {/* Progress badge on bar */}
+                        {/* Darker progress fill overlay on top of base color */}
                         {progress > 0 && (
-                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: 'rgba(0,0,0,0.35)', color: '#fff' }}>
-                            {progress}%
-                          </div>
+                          <div className="absolute inset-y-0 left-0 rounded-full"
+                            style={{ 
+                              width: `${progress}%`, 
+                              backgroundColor: 'rgba(0,0,0,0.25)',
+                            }} />
                         )}
+                        {/* Progress badge */}
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full"
+                          style={{ backgroundColor: 'rgba(0,0,0,0.3)', color: '#fff' }}>
+                          {progress}%
+                        </div>
                       </div>
 
                       {/* Badges row below bar — matching Josh's design */}
@@ -266,21 +274,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
           </div>
         </div>
 
-        {/* Zoom slider — bottom-right corner */}
-        <div className="sticky bottom-0 flex justify-end px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 dark:text-gray-400">−</span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={zoomLevel}
-              onChange={(e) => setZoomLevel(Number(e.target.value))}
-              className="w-40 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500"
-            />
-            <span className="text-xs text-gray-500 dark:text-gray-400">+</span>
-          </div>
-        </div>
+
       </div>
     </div>
   );

@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.20.0',
+    date: '2026-04-13',
+    changes: [
+      { type: 'feature', description: 'Edit Dashboard modal — click Edit on home page to change name, description, and password protection settings' },
+      { type: 'feature', description: 'Sticky project name column — stays visible when scrolling horizontally across the Roadmap timeline' },
+      { type: 'fix', description: 'Roadmap bars are now always solid-colored (not just outlined). Progress shows as a darker overlay within the bar.' },
+      { type: 'fix', description: 'Zoom slider moved back to top controls (was blocked by feedback button at bottom)' },
+    ]
+  },
+  {
     version: '1.19.1',
     date: '2026-04-13',
     changes: [

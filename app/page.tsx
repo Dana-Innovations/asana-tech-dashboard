@@ -20,6 +20,11 @@ export default function DashboardManager() {
   const [dashboards, setDashboards] = useState<DashboardConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingDashboard, setEditingDashboard] = useState<DashboardConfig | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editPassword, setEditPassword] = useState('');
+  const [editProtected, setEditProtected] = useState(false);
 
   // Mock data for now - this will be replaced with Supabase integration
   useEffect(() => {
@@ -157,7 +162,11 @@ export default function DashboardManager() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Handle edit click
+                        setEditingDashboard(dashboard);
+                        setEditName(dashboard.name);
+                        setEditDesc(dashboard.description);
+                        setEditProtected(dashboard.isPasswordProtected);
+                        setEditPassword('');
                       }}
                       className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
@@ -208,6 +217,25 @@ export default function DashboardManager() {
             setShowCreateModal(false);
           }}
         />
+      )}
+
+      {/* Edit Dashboard Modal */}
+      {editingDashboard && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setEditingDashboard(null)}>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700" onClick={e => e.stopPropagation()}>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2"><Settings className="w-5 h-5" /> Edit Dashboard</h2>
+            <div className="space-y-4">
+              <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dashboard Name</label><input value={editName} onChange={e => setEditName(e.target.value)} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm" /></div>
+              <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label><textarea value={editDesc} onChange={e => setEditDesc(e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm" /></div>
+              <div className="flex items-center gap-3"><input type="checkbox" id="editProt" checked={editProtected} onChange={e => setEditProtected(e.target.checked)} className="w-4 h-4 text-blue-600 rounded" /><label htmlFor="editProt" className="text-sm text-gray-700 dark:text-gray-300">Password protected</label></div>
+              {editProtected && (<div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label><input type="password" value={editPassword} onChange={e => setEditPassword(e.target.value)} placeholder="New password (blank = keep)" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm" /></div>)}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => { setDashboards(prev => prev.map(d => d.id === editingDashboard.id ? { ...d, name: editName, description: editDesc, isPasswordProtected: editProtected } : d)); setEditingDashboard(null); }} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Save Changes</button>
+              <button onClick={() => setEditingDashboard(null)} className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700">Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
