@@ -7,6 +7,9 @@ import { AsanaService } from '../../lib/asana';
 import { ProjectStore } from '../../lib/supabase';
 import { KanbanView } from '../../components/KanbanView';
 import { StoplightView } from '../../components/StoplightView';
+import { RoadmapView } from '../../components/RoadmapView';
+import { ListView } from '../../components/ListView';
+import { ProjectsGrid } from '../../components/ProjectsGrid';
 import { DashboardHeader } from '../../components/DashboardHeader';
 import { FilterPanel } from '../../components/FilterPanel';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -308,14 +311,11 @@ export default function Dashboard() {
       />
 
       <main className="w-full px-6 py-8">
-        {viewMode === 'kanban' ? (
-          <KanbanView 
-            projects={filteredProjects} 
-            onProjectUpdate={loadProjects}
-          />
-        ) : (
-          <StoplightView projects={filteredProjects} />
-        )}
+        {viewMode === 'kanban' && <KanbanView projects={filteredProjects} onProjectUpdate={loadProjects} />}
+        {viewMode === 'stoplight' && <StoplightView projects={filteredProjects} />}
+        {viewMode === 'roadmap' && <RoadmapView projects={filteredProjects} />}
+        {viewMode === 'list' && <ListView projects={filteredProjects} />}
+        {viewMode === 'grid' && <ProjectsGrid projects={filteredProjects} />}
       </main>
 
       {/* Fixed UI Elements */}

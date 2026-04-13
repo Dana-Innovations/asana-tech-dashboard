@@ -50,6 +50,7 @@ export class AsanaService {
             'created_at',
             'modified_at',
             'due_date',
+            'start_on',
             'notes'
           ].join(',')
         }
@@ -105,6 +106,7 @@ export class AsanaService {
             'created_at',
             'modified_at',
             'due_date',
+            'start_on',
             'notes'
           ].join(',')
         }
@@ -278,6 +280,7 @@ export class AsanaService {
             'assignee.name',
             'assignee.email',
             'due_date',
+            'start_on',
             'created_at',
             'modified_at'
           ].join(',')

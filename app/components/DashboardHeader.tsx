@@ -113,7 +113,40 @@ export function DashboardHeader({
                 }`}
               >
                 <List className="w-4 h-4" />
+                <span>Stoplight</span>
+              </button>
+              <button
+                onClick={() => onViewModeChange('roadmap')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'roadmap'
+                    ? 'bg-sonance-beam text-white shadow-sm'
+                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
+                }`}
+              >
+                <span className="w-4 h-4 text-center leading-4">📅</span>
+                <span>Roadmap</span>
+              </button>
+              <button
+                onClick={() => onViewModeChange('list')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'list'
+                    ? 'bg-sonance-beam text-white shadow-sm'
+                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
+                }`}
+              >
+                <List className="w-4 h-4" />
                 <span>List</span>
+              </button>
+              <button
+                onClick={() => onViewModeChange('grid')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-sonance-beam text-white shadow-sm'
+                    : 'text-sonance-silver hover:text-sonance-white hover:bg-sonance-slate/20'
+                }`}
+              >
+                <Grid className="w-4 h-4" />
+                <span>Grid</span>
               </button>
             </div>
 

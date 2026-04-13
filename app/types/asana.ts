@@ -17,6 +17,7 @@ export interface AsanaProject {
   created_at: string;
   modified_at: string;
   due_date?: string;
+  start_on?: string;
   notes?: string;
   progress?: {
     completed_tasks: number;
@@ -79,6 +80,6 @@ export interface KanbanColumn {
   color: string;
 }
 
-export type ViewMode = 'kanban' | 'stoplight';
+export type ViewMode = 'kanban' | 'stoplight' | 'roadmap' | 'list' | 'grid';
 export type SortField = 'name' | 'modified_at' | 'due_date' | 'progress';
 export type SortOrder = 'asc' | 'desc';
