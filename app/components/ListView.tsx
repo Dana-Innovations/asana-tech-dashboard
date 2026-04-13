@@ -35,24 +35,24 @@ export function ListView({ projects, onProjectClick }: ListViewProps) {
   }), [projects, sortField, sortOrder]);
 
   const SortBtn = ({ field, label }: { field: SortField; label: string }) => (
-    <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-gray-200" onClick={() => toggleSort(field)}>
+    <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:text-gray-200" onClick={() => toggleSort(field)}>
       <div className="flex items-center gap-1">{label} <span className="text-[0.6rem]">{sortField === field ? (sortOrder === 'asc' ? '▲' : '▼') : '△'}</span></div>
     </th>
   );
 
   return (
-    <div className="border border-gray-700 rounded-xl overflow-hidden bg-gray-900/50">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-900/50">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-800/50 border-b border-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
             <tr>
               <SortBtn field="name" label="Project" />
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Type</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Dept</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Health</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Stage</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Priority</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Owner</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Type</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Dept</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Health</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Stage</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Priority</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Owner</th>
               <SortBtn field="progress" label="Progress" />
               <SortBtn field="due_date" label="Timeline" />
             </tr>
@@ -62,10 +62,10 @@ export function ListView({ projects, onProjectClick }: ListViewProps) {
               const color = getStatusColor(p);
               const progress = p.progress?.percentage || 0;
               return (
-                <tr key={p.gid} className="border-b border-gray-800/50 hover:bg-gray-800/40 cursor-pointer transition-colors" onClick={() => onProjectClick?.(p)}>
-                  <td className="px-3 py-3"><div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full shrink-0" style={{backgroundColor: color}}/><span className="text-sm text-gray-200 font-medium truncate max-w-[220px]">{p.name}</span></div></td>
-                  <td className="px-3 py-3"><span className="text-xs px-2 py-1 rounded-md bg-gray-800 text-gray-300 font-mono">{getField(p, 'type')}</span></td>
-                  <td className="px-3 py-3 text-xs text-gray-400 max-w-[120px] truncate">{getField(p, 'department')}</td>
+                <tr key={p.gid} className="border-b border-gray-100 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/40 cursor-pointer transition-colors" onClick={() => onProjectClick?.(p)}>
+                  <td className="px-3 py-3"><div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full shrink-0" style={{backgroundColor: color}}/><span className="text-sm text-gray-800 dark:text-gray-200 font-medium truncate max-w-[220px]">{p.name}</span></div></td>
+                  <td className="px-3 py-3"><span className="text-xs px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-mono">{getField(p, 'type')}</span></td>
+                  <td className="px-3 py-3 text-xs text-gray-500 dark:text-gray-400 max-w-[120px] truncate">{getField(p, 'department')}</td>
                   <td className="px-3 py-3"><div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: color}}/><span className="text-xs text-gray-400">{getHealthLabel(p)}</span></div></td>
                   <td className="px-3 py-3 text-xs text-gray-400">{getField(p, 'stage')}</td>
                   <td className="px-3 py-3"><span className={`text-xs font-bold ${getField(p,'priority')==='P1'?'text-red-400':getField(p,'priority')==='P2'?'text-yellow-400':'text-gray-500'}`}>{getField(p, 'priority')}</span></td>

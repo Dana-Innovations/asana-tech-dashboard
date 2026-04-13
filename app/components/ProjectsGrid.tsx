@@ -33,10 +33,10 @@ export function ProjectsGrid({ projects, onProjectClick }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-400">Group by:</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">Group by:</span>
         {(['all', 'type', 'department', 'priority', 'stage'] as GroupBy[]).map(g => (
           <button key={g} onClick={() => setGroupBy(g)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${groupBy === g ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${groupBy === g ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}>
             {g.charAt(0).toUpperCase() + g.slice(1)}
           </button>
         ))}
@@ -49,8 +49,8 @@ export function ProjectsGrid({ projects, onProjectClick }: Props) {
             <button onClick={() => { const n = new Set(collapsed); isCollapsed ? n.delete(group.key) : n.add(group.key); setCollapsed(n); }}
               className="flex items-center gap-2 w-full text-left group cursor-pointer">
               <span className="text-gray-500 text-xs transition-transform" style={{ transform: isCollapsed ? 'rotate(-90deg)' : '' }}>▼</span>
-              <span className="text-sm font-semibold text-gray-300 group-hover:text-white">{group.key}</span>
-              <span className="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded-full">{group.projects.length}</span>
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white">{group.key}</span>
+              <span className="text-xs text-gray-500 bg-gray-100 dark:text-gray-600 dark:bg-gray-800 px-2 py-0.5 rounded-full">{group.projects.length}</span>
             </button>
 
             {!isCollapsed && (
@@ -60,12 +60,12 @@ export function ProjectsGrid({ projects, onProjectClick }: Props) {
                   const progress = p.progress?.percentage || 0;
                   return (
                     <div key={p.gid} onClick={() => onProjectClick?.(p)}
-                      className="border border-gray-700/60 rounded-xl p-4 bg-gray-900/50 hover:bg-gray-800/50 hover:border-gray-600 cursor-pointer transition-all group">
+                      className="border border-gray-200 dark:border-gray-700/60 rounded-xl p-4 bg-white dark:bg-gray-900/50 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm cursor-pointer transition-all group">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1 min-w-0 pr-2">
-                          <h3 className="text-sm font-semibold text-gray-200 truncate group-hover:text-white">{p.name}</h3>
+                          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-black dark:group-hover:text-white">{p.name}</h3>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">{getField(p, 'type')}</span>
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">{getField(p, 'type')}</span>
                             <span className="text-xs text-gray-500 truncate">{getField(p, 'department')}</span>
                           </div>
                         </div>
