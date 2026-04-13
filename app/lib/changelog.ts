@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.19.1',
+    date: '2026-04-13',
+    changes: [
+      { type: 'fix', description: 'Project names now wrap to 2 lines instead of truncating — full names visible in 360px column' },
+      { type: 'fix', description: 'Bar progress fill now 100% opacity (was 85%) with lighter unfilled background for maximum contrast' },
+      { type: 'improvement', description: 'Row height increased to 80px to accommodate 2-line project names' },
+    ]
+  },
+  {
     version: '1.19.0',
     date: '2026-04-13',
     changes: [

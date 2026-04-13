@@ -108,7 +108,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
   };
 
   const todayPct = ((Date.now() - timelineStart.getTime()) / (timelineEnd.getTime() - timelineStart.getTime())) * 100;
-  const ROW_HEIGHT = 76;
+  const ROW_HEIGHT = 80;
 
   const sortedProjects = useMemo(() => {
     return [...projects].sort((a, b) => {
@@ -190,7 +190,7 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                   {/* Project Name */}
                   <div className="shrink-0 px-4 flex items-center gap-2 border-r border-gray-200/60 dark:border-gray-700/50" style={{ width: `${NAME_COL}px` }}>
                     <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                    <span className="text-sm text-gray-800 dark:text-gray-200 truncate leading-tight font-medium">{project.name}</span>
+                    <span className="text-sm text-gray-800 dark:text-gray-200 leading-tight font-medium" style={{overflow:'hidden', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical'}}>{project.name}</span>
                   </div>
 
                   {/* Timeline Bar Area */}
@@ -207,15 +207,15 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '28px',
-                          backgroundColor: `${color}20`,
-                          border: estimated ? `1.5px dashed ${color}60` : `1px solid ${color}40`,
+                          backgroundColor: `${color}15`,
+                          border: estimated ? `1.5px dashed ${color}50` : `1px solid ${color}30`,
                         }}>
-                        {/* Dark progress fill — solid, high contrast */}
+                        {/* Dark progress fill — fully opaque, high contrast */}
                         <div className="absolute inset-y-0 left-0 rounded-full"
                           style={{ 
-                            width: `${Math.max(progress, estimated ? 0 : 5)}%`, 
+                            width: `${Math.max(progress, estimated ? 0 : 3)}%`, 
                             backgroundColor: color,
-                            opacity: 0.85,
+                            opacity: 1,
                           }} />
                         {/* Progress badge on bar */}
                         {progress > 0 && (
