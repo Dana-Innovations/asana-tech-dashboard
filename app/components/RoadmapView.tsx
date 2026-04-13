@@ -204,19 +204,19 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
                       {/* Bar itself */}
                       <div className="relative rounded-full overflow-hidden"
                         style={{
-                          height: '24px',
-                          backgroundColor: `${color}${estimated ? '18' : '25'}`,
-                          border: estimated ? `1px dashed ${color}60` : `1.5px solid ${color}70`,
+                          height: '30px',
+                          backgroundColor: `${color}${estimated ? '40' : '70'}`,
+                          border: estimated ? `1.5px dashed ${color}80` : `none`,
                         }}>
                         {/* Progress fill */}
                         {progress > 0 && (
                           <div className="absolute inset-y-0 left-0 rounded-full"
-                            style={{ width: `${progress}%`, backgroundColor: `${color}50` }} />
+                            style={{ width: `${progress}%`, backgroundColor: `${color}90` }} />
                         )}
                         {/* Progress badge */}
                         {progress > 0 && (
-                          <div className="absolute right-1 top-1/2 -translate-y-1/2 text-[0.55rem] font-bold px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: `${color}30`, color: color }}>
+                          <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[0.6rem] font-bold px-2 py-0.5 rounded-full"
+                            style={{ backgroundColor: 'rgba(0,0,0,0.3)', color: '#fff' }}>
                             {progress}%
                           </div>
                         )}
