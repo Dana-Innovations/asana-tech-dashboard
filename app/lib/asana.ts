@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AsanaProject, AsanaTask } from '../types/asana';
+import { AsanaProject, AsanaTask, AsanaCustomField } from '../types/asana';
 
 export class AsanaService {
   private apiClient: any;
@@ -57,15 +57,20 @@ export class AsanaService {
       });
 
       const projects = response.data.data;
-      
-      // Get task counts for each project
+
+      // Prefer the "Task progress" custom field on the project; fall back to
+      // counting completed/total tasks only when the field isn't present.
       const projectsWithProgress = await Promise.all(
         projects.map(async (project: any) => {
+          const fieldProgress = getTaskProgressFromCustomFieldsRaw(project.custom_fields);
+          if (fieldProgress !== null) {
+            return {
+              ...project,
+              progress: { completed_tasks: 0, total_tasks: 0, percentage: fieldProgress },
+            };
+          }
           const progress = await this.getProjectProgress(project.gid);
-          return {
-            ...project,
-            progress
-          };
+          return { ...project, progress };
         })
       );
 
@@ -139,11 +144,20 @@ export class AsanaService {
           });
         }
 
+        const customFields = project.custom_fields || [];
+        // Pull the task-progress percentage straight from the Asana custom field
+        // (avoids paying a per-project /tasks API call for every portfolio project).
+        const fieldProgress = getTaskProgressFromCustomFieldsRaw(customFields);
+
         return {
           ...project,
-          custom_fields: project.custom_fields || [],
+          custom_fields: customFields,
           members: members,
-          progress: { completed_tasks: 0, total_tasks: 0, percentage: 0 } // Default progress
+          progress: {
+            completed_tasks: 0,
+            total_tasks: 0,
+            percentage: fieldProgress ?? 0,
+          },
         };
       });
 
@@ -297,6 +311,30 @@ export class AsanaService {
 
 // Project Stage Management
 const STAGE_FIELD_NAMES = ['T&I Stage', 'Project Stage', 'Stage', 'Dashboard Stage'];
+
+// Custom field names that hold a project's overall completion percentage in Asana
+const PROGRESS_FIELD_NAMES = ['Task progress', 'Task Progress', 'Progress', '% Complete', 'Percent Complete'];
+
+export function getTaskProgressFromCustomFieldsRaw(customFields: AsanaCustomField[] | undefined | null): number | null {
+  if (!customFields) return null;
+  const field = customFields.find(f =>
+    PROGRESS_FIELD_NAMES.some(name => f.name?.toLowerCase() === name.toLowerCase())
+  );
+  if (!field || !field.display_value) return null;
+  const cleaned = String(field.display_value).replace('%', '').trim();
+  const n = parseFloat(cleaned);
+  if (isNaN(n)) return null;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+/**
+ * Look for a custom field that stores the project's task-completion percentage and
+ * return it as a number 0-100. Asana surfaces values as `display_value` strings, e.g.
+ * "75%" for percentage fields or "75" for plain numbers — handle both.
+ */
+export function getTaskProgressFromCustomFields(project: AsanaProject): number | null {
+  return getTaskProgressFromCustomFieldsRaw(project.custom_fields);
+}
 
 export function getProjectStage(project: AsanaProject): string {
   // Look for custom field that tracks project stage (check multiple possible names)

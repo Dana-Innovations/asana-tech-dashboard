@@ -12,43 +12,55 @@ export class ProjectStore {
       console.warn('Supabase not configured - skipping save');
       return;
     }
-    try {
-      const { error } = await supabase
+    const buildRow = (project: AsanaProject, includeStartOn: boolean): Record<string, any> => {
+      const row: Record<string, any> = {
+        asana_id: project.gid,
+        dashboard_id: dashboardId || null,
+        name: project.name,
+        completed: project.completed,
+        status_color: project.current_status?.color || null,
+        status_text: project.current_status?.text || null,
+        status_title: project.current_status?.title || null,
+        custom_fields: project.custom_fields,
+        team_id: project.team?.gid || null,
+        team_name: project.team?.name || null,
+        members: project.members,
+        created_at: project.created_at,
+        modified_at: project.modified_at,
+        due_date: project.due_date || null,
+        notes: project.notes || null,
+        completed_tasks: project.progress?.completed_tasks || 0,
+        total_tasks: project.progress?.total_tasks || 0,
+        progress_percentage: project.progress?.percentage || 0,
+        updated_at: new Date().toISOString(),
+      };
+      if (includeStartOn) row.start_on = project.start_on || null;
+      return row;
+    };
+
+    const tryUpsert = async (includeStartOn: boolean) =>
+      supabase!
         .from('projects')
-        .upsert(
-          projects.map(project => ({
-            asana_id: project.gid,
-            dashboard_id: dashboardId || null,
-            name: project.name,
-            completed: project.completed,
-            status_color: project.current_status?.color || null,
-            status_text: project.current_status?.text || null,
-            status_title: project.current_status?.title || null,
-            custom_fields: project.custom_fields,
-            team_id: project.team?.gid || null,
-            team_name: project.team?.name || null,
-            members: project.members,
-            created_at: project.created_at,
-            modified_at: project.modified_at,
-            due_date: project.due_date || null,
-            notes: project.notes || null,
-            completed_tasks: project.progress?.completed_tasks || 0,
-            total_tasks: project.progress?.total_tasks || 0,
-            progress_percentage: project.progress?.percentage || 0,
-            updated_at: new Date().toISOString(),
-          })),
-          { 
-            onConflict: dashboardId ? 'asana_id,dashboard_id' : 'asana_id',
-            ignoreDuplicates: false 
-          }
-        );
+        .upsert(projects.map(p => buildRow(p, includeStartOn)), {
+          onConflict: dashboardId ? 'asana_id,dashboard_id' : 'asana_id',
+          ignoreDuplicates: false,
+        });
+
+    try {
+      let { error } = await tryUpsert(true);
+      // If the start_on column hasn't been migrated yet, retry without it so
+      // the rest of the cache update still succeeds.
+      if (error && /start_on/.test(error.message || '')) {
+        console.warn('start_on column missing — caching without it. Apply supabase-add-start-on.sql to fix.');
+        ({ error } = await tryUpsert(false));
+      }
 
       if (error) throw error;
-      
+
       console.log(`Saved ${projects.length} projects to database`);
     } catch (error) {
+      // Log but don't rethrow — failing to cache shouldn't block fresh data from reaching the UI.
       console.error('Error saving projects to database:', error);
-      throw error;
     }
   }
 
@@ -93,6 +105,7 @@ export class ProjectStore {
         created_at: row.created_at,
         modified_at: row.modified_at,
         due_date: row.due_date,
+        start_on: row.start_on || undefined,
         notes: row.notes,
         progress: {
           completed_tasks: row.completed_tasks || 0,

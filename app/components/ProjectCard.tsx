@@ -116,12 +116,12 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
 
   const formatDueDate = (dateString?: string) => {
     if (!dateString) return null;
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 0) {
       return { text: `${Math.abs(diffDays)}d overdue`, color: 'text-red-600' };
     } else if (diffDays === 0) {
@@ -133,7 +133,15 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
     }
   };
 
+  const formatShortDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  };
+
   const dueDate = formatDueDate(project.due_date);
+  const startDateShort = formatShortDate(project.start_on);
+  const endDateShort = formatShortDate(project.due_date);
 
   // Helper function to render service links as icon buttons
   const getServiceLinks = () => {
@@ -290,28 +298,50 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       {/* Service Links */}
       {getServiceLinks()}
 
-      {/* Progress Bar */}
+      {/* Progress Bar — pulls from Asana "Task progress" custom field (or task counts) */}
       {project.progress && (
         <div className="mb-3">
           <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
             <span>Progress</span>
-            <span>{formatProgress(project)}</span>
+            <span>
+              {project.progress.total_tasks > 0
+                ? formatProgress(project)
+                : `${project.progress.percentage}%`}
+            </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
             <div
-              className={`h-2 rounded-full ${getProgressBarColor()}`}
+              className={`h-2 rounded-full transition-all ${getProgressBarColor()}`}
               style={{ width: `${project.progress.percentage}%` }}
             />
           </div>
         </div>
       )}
 
-      {/* Due Date */}
-      {dueDate && (
-        <div className="flex items-center space-x-2 mb-3">
-          <Calendar className="w-4 h-4 text-gray-400" />
-          <span className={`text-sm ${dueDate.color}`}>
-            {dueDate.text}
+      {/* Date range — Start → End */}
+      {(startDateShort || endDateShort) && (
+        <div className="flex items-center space-x-2 mb-3 flex-wrap">
+          <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {startDateShort ? (
+              <>
+                <span className="font-medium">Start:</span> {startDateShort}
+              </>
+            ) : (
+              <span className="text-gray-400 italic">No start</span>
+            )}
+            <span className="mx-1.5 text-gray-400">→</span>
+            {endDateShort ? (
+              <>
+                <span className="font-medium">End:</span>{' '}
+                <span className={dueDate?.color}>{endDateShort}</span>
+                {dueDate && dueDate.text !== endDateShort && (
+                  <span className={`ml-1.5 text-xs ${dueDate.color}`}>({dueDate.text})</span>
+                )}
+              </>
+            ) : (
+              <span className="text-gray-400 italic">No end</span>
+            )}
           </span>
         </div>
       )}

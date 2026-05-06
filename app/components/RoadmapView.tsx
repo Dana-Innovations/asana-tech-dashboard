@@ -211,25 +211,28 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
 
                     {/* The Bar + badges */}
                     <div className="absolute" style={{ left: `${leftPct}%`, width: `${widthPct}%`, top: '8px' }}>
-                      {/* Bar — always solid colored like Josh's design */}
+                      {/* Bar track: faded base + solid dark progress fill aligned to % complete */}
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '28px',
                           backgroundColor: color,
-                          opacity: estimated ? 0.5 : 0.85,
+                          opacity: estimated ? 0.85 : 1,
                           border: estimated ? `1.5px dashed ${color}` : 'none',
                         }}>
-                        {/* Darker progress fill overlay on top of base color */}
+                        {/* Faded overlay on the unfilled portion to make the dark progress fill pop */}
+                        <div className="absolute inset-0 rounded-full"
+                          style={{ backgroundColor: 'rgba(255,255,255,0.55)' }} />
+                        {/* Solid dark progress fill (full-saturation color) sized to exact % */}
                         {progress > 0 && (
                           <div className="absolute inset-y-0 left-0 rounded-full"
-                            style={{ 
-                              width: `${progress}%`, 
-                              backgroundColor: 'rgba(0,0,0,0.25)',
+                            style={{
+                              width: `${progress}%`,
+                              backgroundColor: color,
                             }} />
                         )}
                         {/* Progress badge */}
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full"
-                          style={{ backgroundColor: 'rgba(0,0,0,0.3)', color: '#fff' }}>
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full pointer-events-none"
+                          style={{ backgroundColor: 'rgba(0,0,0,0.55)', color: '#fff' }}>
                           {progress}%
                         </div>
                       </div>

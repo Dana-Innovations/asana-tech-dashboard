@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.21.0',
+    date: '2026-05-05',
+    changes: [
+      { type: 'fix', description: 'Roadmap bars now show a solid dark progress fill aligned to the percentage; the unfilled portion is faded for clear contrast' },
+      { type: 'fix', description: 'Kanban cards now show BOTH start and end dates (Start: → End:) instead of just due date' },
+      { type: 'fix', description: 'Kanban progress bars and percentage now read from the Asana "Task progress" custom field on the project (with task-count fallback)' },
+    ]
+  },
+  {
     version: '1.20.0',
     date: '2026-04-13',
     changes: [
