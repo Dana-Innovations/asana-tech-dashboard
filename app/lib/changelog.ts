@@ -9,6 +9,14 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.22.0',
+    date: '2026-06-04',
+    changes: [
+      { type: 'feature', description: 'Product images on project cards — add a custom field named "Product Image" (or any field with "image"/"photo" in the name) in Asana holding an image URL, and it renders as a square thumbnail on the card. Built for hardware product development: glance across the grid and recognize each project by its product shot.' },
+      { type: 'feature', description: 'Larger product image shown in the project detail modal (click any card). Editable inline via Edit Metadata, or in Asana directly.' },
+    ]
+  },
+  {
     version: '1.21.1',
     date: '2026-05-06',
     changes: [

@@ -25,6 +25,15 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
   const tiStage = getCustomFieldValue('T&I Stage');
   const tiPriority = getCustomFieldValue('T&I Priority');
 
+  // Product image: any custom field whose name contains "image" or "photo"
+  // and whose value is a URL. Lets the PD team attach a product shot per card
+  // (great for hardware — glance at the grid and recognize each project visually).
+  const isImageFieldName = (name: string) => /image|photo/i.test(name);
+  const productImageField = project.custom_fields.find(
+    f => isImageFieldName(f.name) && f.display_value?.startsWith('http')
+  );
+  const productImageUrl = productImageField?.display_value;
+
   const getStatusBadge = () => {
     // Only show status badge if there's an actual status update and it's recent
     if (!project.current_status?.color) {
@@ -149,7 +158,7 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
     
     // Find relevant custom fields for service links
     project.custom_fields.forEach(field => {
-      if (field.display_value && field.display_value !== '-' && field.display_value !== 'null' && field.display_value.startsWith('http')) {
+      if (field.display_value && field.display_value !== '-' && field.display_value !== 'null' && field.display_value.startsWith('http') && !isImageFieldName(field.name)) {
         const url = field.display_value;
         const fieldName = field.name.toLowerCase();
         
@@ -207,6 +216,17 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
         onClick={onClick}
       >
         <div className="flex items-center justify-between">
+          {productImageUrl && (
+            <div className="shrink-0 mr-3 w-12 h-12 rounded-md overflow-hidden border border-gray-200 dark:border-sonance-slate/60 bg-gray-50 dark:bg-sonance-slate/30">
+              <img
+                src={productImageUrl}
+                alt={project.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+              />
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-sonance-dark dark:text-sonance-silver truncate" title={project.name}>{project.name}</h4>
             <div className="flex items-center space-x-2 mt-1">
@@ -270,6 +290,17 @@ export function ProjectCard({ project, compact = false, onClick }: ProjectCardPr
       {/* Header */}
       <div className="mb-3">
         <div className="flex items-start justify-between">
+          {productImageUrl && (
+            <div className="shrink-0 mr-3 w-16 h-16 rounded-md overflow-hidden border border-gray-200 dark:border-sonance-slate/60 bg-gray-50 dark:bg-sonance-slate/30">
+              <img
+                src={productImageUrl}
+                alt={project.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+              />
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-gray-900 dark:text-white truncate tracking-tight" title={project.name}>{project.name}</h4>
           </div>

@@ -139,6 +139,12 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
     }));
   };
 
+  // Product image: any custom field named like "image"/"photo" holding a URL.
+  const productImageField = project.custom_fields.find(
+    f => /image|photo/i.test(f.name) && f.display_value?.startsWith('http')
+  );
+  const productImageUrl = productImageField?.display_value;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -199,6 +205,20 @@ export function ProjectModal({ project, isOpen, onClose, onUpdate }: ProjectModa
 
         {/* Content */}
         <div className="p-6 space-y-6">
+          {/* Product Image */}
+          {productImageUrl && (
+            <div className="flex justify-center">
+              <div className="w-48 h-48 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <img
+                  src={productImageUrl}
+                  alt={project.name}
+                  className="w-full h-full object-contain"
+                  loading="lazy"
+                  onError={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+                />
+              </div>
+            </div>
+          )}
           {/* Status and Progress */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Current Status */}
