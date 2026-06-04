@@ -87,32 +87,41 @@ export class ProjectStore {
 
       if (error) throw error;
 
-      return data.map(row => ({
-        gid: row.asana_id,
-        name: row.name,
-        completed: row.completed,
-        current_status: row.status_color ? {
-          color: row.status_color,
-          text: row.status_text,
-          title: row.status_title,
-        } : undefined,
-        custom_fields: row.custom_fields || [],
-        team: row.team_id ? {
-          gid: row.team_id,
-          name: row.team_name,
-        } : undefined,
-        members: row.members || [],
-        created_at: row.created_at,
-        modified_at: row.modified_at,
-        due_date: row.due_date,
-        start_on: row.start_on || undefined,
-        notes: row.notes,
-        progress: {
-          completed_tasks: row.completed_tasks || 0,
-          total_tasks: row.total_tasks || 0,
-          percentage: row.progress_percentage || 0,
-        }
-      }));
+      return data.map(row => {
+        const customFields = row.custom_fields || [];
+        // If the start_on column hasn't been migrated yet, fall back to the
+        // "Start Date" custom field so kanban cards still render a start date.
+        const startDateCustom = customFields.find((f: any) => f.name === 'Start Date');
+        const startOnFromCustom = startDateCustom?.display_value
+          ? String(startDateCustom.display_value).slice(0, 10)
+          : undefined;
+        return {
+          gid: row.asana_id,
+          name: row.name,
+          completed: row.completed,
+          current_status: row.status_color ? {
+            color: row.status_color,
+            text: row.status_text,
+            title: row.status_title,
+          } : undefined,
+          custom_fields: customFields,
+          team: row.team_id ? {
+            gid: row.team_id,
+            name: row.team_name,
+          } : undefined,
+          members: row.members || [],
+          created_at: row.created_at,
+          modified_at: row.modified_at,
+          due_date: row.due_date,
+          start_on: row.start_on || startOnFromCustom,
+          notes: row.notes,
+          progress: {
+            completed_tasks: row.completed_tasks || 0,
+            total_tasks: row.total_tasks || 0,
+            percentage: row.progress_percentage || 0,
+          }
+        };
+      });
     } catch (error) {
       console.error('Error fetching projects from database:', error);
       throw error;

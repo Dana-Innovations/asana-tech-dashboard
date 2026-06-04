@@ -9,6 +9,14 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.21.1',
+    date: '2026-05-06',
+    changes: [
+      { type: 'fix', description: 'Kanban progress bars now compute task completion per project (no portfolio project defines a "Task progress" custom field, so v1.21.0 always rendered 0%)' },
+      { type: 'fix', description: 'Kanban cards still show start dates even when the Supabase start_on migration has not been applied — falls back to the "Start Date" custom field on the cached row' },
+    ]
+  },
+  {
     version: '1.21.0',
     date: '2026-05-05',
     changes: [

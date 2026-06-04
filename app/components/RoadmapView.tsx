@@ -211,23 +211,20 @@ export function RoadmapView({ projects, onProjectClick }: RoadmapViewProps) {
 
                     {/* The Bar + badges */}
                     <div className="absolute" style={{ left: `${leftPct}%`, width: `${widthPct}%`, top: '8px' }}>
-                      {/* Bar track: faded base + solid dark progress fill aligned to % complete */}
+                      {/* Bar track: faded color base + solid dark progress fill aligned to % complete */}
                       <div className="relative rounded-full overflow-hidden"
                         style={{
                           height: '28px',
-                          backgroundColor: color,
-                          opacity: estimated ? 0.85 : 1,
-                          border: estimated ? `1.5px dashed ${color}` : 'none',
+                          backgroundColor: `${color}33`,
+                          border: estimated ? `1.5px dashed ${color}` : `1px solid ${color}66`,
                         }}>
-                        {/* Faded overlay on the unfilled portion to make the dark progress fill pop */}
-                        <div className="absolute inset-0 rounded-full"
-                          style={{ backgroundColor: 'rgba(255,255,255,0.55)' }} />
                         {/* Solid dark progress fill (full-saturation color) sized to exact % */}
                         {progress > 0 && (
-                          <div className="absolute inset-y-0 left-0 rounded-full"
+                          <div className="absolute inset-y-0 left-0"
                             style={{
                               width: `${progress}%`,
                               backgroundColor: color,
+                              opacity: estimated ? 0.85 : 1,
                             }} />
                         )}
                         {/* Progress badge */}

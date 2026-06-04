@@ -118,48 +118,49 @@ export class AsanaService {
       });
 
       const projects = response.data.data;
-      
-      // Process projects and extract deduplicated team members from Owner + Project Participants only
-      const projectsWithBasicData: AsanaProject[] = projects.map((project: any) => {
-        const members: any[] = [];
-        const memberGids = new Set<string>();
 
-        // Add owner if exists
-        if (project.owner) {
-          members.push(project.owner);
-          memberGids.add(project.owner.gid);
-        }
+      // Process projects and extract deduplicated team members from Owner + Project Participants only.
+      // Compute progress in parallel: prefer a "Task progress" custom field if present, else count
+      // completed/total tasks via /projects/{gid}/tasks. The Asana portfolio used by the tech
+      // dashboard does NOT define a Task progress custom field on any project, so the task-count
+      // path is what actually drives the kanban progress bars.
+      const projectsWithBasicData: AsanaProject[] = await Promise.all(
+        projects.map(async (project: any) => {
+          const members: any[] = [];
+          const memberGids = new Set<string>();
 
-        // Add project participants from custom field (avoiding duplicates by GID)
-        const participantsField = project.custom_fields?.find((field: any) => 
-          field.name === 'Project Participants'
-        );
-        
-        if (participantsField && participantsField.people_value) {
-          participantsField.people_value.forEach((participant: any) => {
-            if (!memberGids.has(participant.gid)) {
-              members.push(participant);
-              memberGids.add(participant.gid);
-            }
-          });
-        }
+          if (project.owner) {
+            members.push(project.owner);
+            memberGids.add(project.owner.gid);
+          }
 
-        const customFields = project.custom_fields || [];
-        // Pull the task-progress percentage straight from the Asana custom field
-        // (avoids paying a per-project /tasks API call for every portfolio project).
-        const fieldProgress = getTaskProgressFromCustomFieldsRaw(customFields);
+          const participantsField = project.custom_fields?.find((field: any) =>
+            field.name === 'Project Participants'
+          );
 
-        return {
-          ...project,
-          custom_fields: customFields,
-          members: members,
-          progress: {
-            completed_tasks: 0,
-            total_tasks: 0,
-            percentage: fieldProgress ?? 0,
-          },
-        };
-      });
+          if (participantsField && participantsField.people_value) {
+            participantsField.people_value.forEach((participant: any) => {
+              if (!memberGids.has(participant.gid)) {
+                members.push(participant);
+                memberGids.add(participant.gid);
+              }
+            });
+          }
+
+          const customFields = project.custom_fields || [];
+          const fieldProgress = getTaskProgressFromCustomFieldsRaw(customFields);
+          const progress = fieldProgress !== null
+            ? { completed_tasks: 0, total_tasks: 0, percentage: fieldProgress }
+            : await this.getProjectProgress(project.gid);
+
+          return {
+            ...project,
+            custom_fields: customFields,
+            members,
+            progress,
+          };
+        })
+      );
 
       return projectsWithBasicData;
     } catch (error) {
