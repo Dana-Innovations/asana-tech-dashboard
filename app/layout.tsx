@@ -2,6 +2,8 @@ import './globals.css'
 import { Montserrat } from 'next/font/google'
 import { ThemeProvider } from './components/ThemeProvider'
 import { AutoRefresh } from './components/AutoRefresh'
+import { SonanceAuthProvider } from '@danainnovations/sonance-auth'
+import { ProfileWidget } from '@/components/profile-widget'
 
 const montserrat = Montserrat({ 
   subsets: ['latin'],
@@ -9,8 +11,8 @@ const montserrat = Montserrat({
 })
 
 export const metadata = {
-  title: 'Asana Dashboard',
-  description: 'Multi-tenant project management dashboards powered by Asana',
+  title: 'Program Dashboard',
+  description: 'Program management dashboard powered by Asana',
 }
 
 export default function RootLayout({
@@ -21,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <ThemeProvider>
-          <div className="min-h-screen bg-gray-50 dark:bg-sonance-dark">
-            {children}
-            <AutoRefresh />
-          </div>
-        </ThemeProvider>
+        <SonanceAuthProvider appName="Program Dashboard">
+          <ThemeProvider>
+            <div className="min-h-screen bg-gray-50 dark:bg-sonance-dark">
+              {children}
+              <AutoRefresh />
+            </div>
+          </ThemeProvider>
+        </SonanceAuthProvider>
       </body>
     </html>
   )
